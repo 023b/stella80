@@ -77,12 +77,13 @@ File-level: the expected note appears in the top k.
 Read from `eval-results.json`; they describe that run only and are not regenerated.
 
 - **Hybrid did not beat keyword-only at k of 3 or 5.** On this tiny set hybrid is best at hit@1 (5 of 7 against 3 of 7 for
-  keyword and 4 of 7 for embeddings), but one passage-level miss at k=3 and k=5 (the question about training memory against
-  inference memory) was found by keyword search and lost in the fusion. One question is 14 points, so this is an observation,
-  not a conclusion.
-- **That same question explains the weakest citation number.** Its answer cited three sources, none containing the supporting
-  sentence, so 6 of 10 citations support the question and the other 4 are on-topic passages that do not. Six of the seven
-  answers were fully supported.
+  keyword and 4 of 7 for embeddings), but at k=3 and k=5 it misses one passage that keyword search finds. That is the question
+  about training memory against inference memory: keyword search ranks the right chunk first, the embedding ranker does not
+  return it in its top five, and the fusion does not recover it. One question is 14 points, so this is an observation, not a
+  conclusion.
+- **That same question explains the weakest citation number.** Its answer cited three sources and none contains the supporting
+  sentence. Counting every citation, 6 of 10 point at supporting text. By answer: five of the seven had every citation supported,
+  one had one of two (it also cited a related passage on exploding gradients), and one had none.
 - **The refusals are real.** All three out-of-scope answers say the excerpts do not contain the answer, including the one on
   attention in transformers, which is close to the notes' topic. No in-scope question was refused. I read all ten answers to
   check the refusal classification; it was right on this run.
