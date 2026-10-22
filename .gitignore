@@ -21,3 +21,8 @@ venv/
 .idea/
 .vscode/
 .DS_Store
+
+# demo recording leftovers
+docs/media/demo-raw.webm
+docs/media/demo-failure.png
+docs/media/demo-marks.json

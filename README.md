@@ -7,6 +7,8 @@ It runs on your own machine, with no cloud, no API keys and no telemetry.
 
 ![STELLA-80 main screen: an answer with a plot drawn from the lecture notes, sources in the reference tray](docs/screenshots/terminal.png)
 
+[Watch the 75-second demo](docs/media/demo.mp4): a cited answer, the note behind a citation, a VAULT ONLY refusal, and the vault tab. Recorded in real time against a CPU-only laptop; the long waits are sped up and captioned as such.
+
 STELLA-80 has two halves:
 
 1. **The vault agent** reads your course files in the background. That means PDFs, slides, Word documents,
