@@ -115,7 +115,7 @@ questions), so treat the numbers as a demonstration of the harness, not a benchm
 
 ```bash
 pip install -r requirements-dev.txt
-pytest                      # 41 offline tests, about two seconds
+pytest                      # 52 offline tests, about two seconds
 python scripts/eval.py      # needs Ollama running with the models pulled
 ```
 

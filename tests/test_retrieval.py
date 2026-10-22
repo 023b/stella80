@@ -103,3 +103,21 @@ def test_reindex_notices_edits_and_deletions(tmp_path):
     p.unlink()
     app.reindex()
     assert app.retrieve("combustion", "ALL", 3, "VaultA") == []
+
+
+@pytest.mark.parametrize("question", ["and why?", "Why does it do that?", "explain more", "what about momentum", "give me an example", "ok", "So how?"])
+def test_followups_borrow_the_previous_question(app_solo, question):
+    assert app_solo.retrieval_query(question, "How does gradient descent work?") == f"How does gradient descent work?\n{question}"
+
+
+@pytest.mark.parametrize("question", [
+    "Who won the 2018 FIFA World Cup?",                                   # short, but a new topic: must not drag the old notes in
+    "How do I make a sourdough starter from scratch?",
+    "What happens in gradient descent if the learning rate is too large? Answer with an example and the formula for the update step.",
+])
+def test_standalone_questions_search_on_their_own(app_solo, question):
+    assert app_solo.retrieval_query(question, "How does gradient descent work?") == question
+
+
+def test_no_previous_question_means_no_borrowing(app_solo):
+    assert app_solo.retrieval_query("and why?", "") == "and why?"

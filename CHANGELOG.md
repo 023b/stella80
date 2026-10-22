@@ -17,7 +17,7 @@ First public release. Extracted from the author's own deployment (one mini PC, o
 - **Solo and shared modes**. Solo: no login, loopback only. Shared: per-person scrypt passphrases, rate-limited login, admin console
   with per-person limits, group chat, leaderboard, study log, uploads into the processing queue.
 - **Docker Compose** and **bare metal (systemd user units)** installs; `scripts/init.sh` and a sample lecture set.
-- **Tests and evaluation**: 41 offline tests (retrieval, quote verification, authentication), CI on Python 3.11 and 3.12, and
+- **Tests and evaluation**: 52 offline tests (retrieval, quote verification, authentication), CI on Python 3.11 and 3.12, and
   `scripts/eval.py` with `docs/EVAL.md` (retrieval hit@k per ranker, citation support, VAULT ONLY refusals, latency).
 - Architecture diagram rendered from `docs/architecture.mmd` by `scripts/render_diagram.py`.
 

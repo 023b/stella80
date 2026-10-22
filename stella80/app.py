@@ -1947,6 +1947,17 @@ async def doc_watch_loop():
         await asyncio.sleep(60)
 
 
+FOLLOWUP = re.compile(r"^\s*(and|but|so|then|also|why|how so|how come|what about|how about|can you|could you|explain (that|it|this|more|again)|"
+                      r"again|more|go on|continue|elaborate|give (me )?(an? )?(example|proof)|show (me )?(that|it|this))\b", re.I)
+
+
+def retrieval_query(question, prev_q):
+    """Search text for a question. A follow-up like "and why?" says nothing on its own, so it borrows the previous question.
+    A short question that stands alone (for example an unrelated one) must not: the old notes would be retrieved for it."""
+    short_followup = len(question) <= 25 or (len(question) <= 60 and FOLLOWUP.search(question))
+    return f"{prev_q}\n{question}" if prev_q and short_followup else question
+
+
 @app.post("/api/chat")
 async def chat(req: Request):
     body = await req.json()
@@ -1990,7 +2001,7 @@ async def chat(req: Request):
     subject_name = f"{subject} {subs[subject]['name']}" if subject in subs else ""
     # Follow-ups like "and why?" retrieve poorly alone; lean on the previous question.
     prev_q = next((h["content"] for h in reversed(history) if h["role"] == "user"), "")
-    rq = question if len(question) > 60 or not prev_q else f"{prev_q}\n{question}"
+    rq = retrieval_query(question, prev_q)
 
     async def stream():
         ticket = {"user": user["name"]}
