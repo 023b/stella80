@@ -1,0 +1,55 @@
+# docker compose up -d   then open http://127.0.0.1:8480 (solo) or http://<server>:8480 (shared)
+# Settings for this file live in .env (copy .env.example). The app itself is configured in stella80.yaml.
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    volumes:
+      - ollama:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=15m
+      - OLLAMA_MAX_LOADED_MODELS=1
+      - OLLAMA_FLASH_ATTENTION=1
+    # NVIDIA GPU: install the NVIDIA Container Toolkit, then uncomment
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    # AMD GPU: use image ollama/ollama:rocm and uncomment
+    # devices: ["/dev/kfd", "/dev/dri"]
+
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on: [ollama]
+    ports:
+      - "${STELLA80_BIND:-127.0.0.1}:${STELLA80_PORT:-8480}:8480"
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - STELLA80_BIND=${STELLA80_BIND:-127.0.0.1}
+    volumes:
+      - ./stella80.yaml:/app/stella80.yaml:ro
+      - ./vaults:/app/vaults
+      - ./data:/app/data
+
+  agent:
+    build: .
+    restart: unless-stopped
+    depends_on: [ollama]
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - VAULT_AGENT_CONFIG=/app/vaults/main/agent.yaml
+      - AGENT_INTERVAL=${AGENT_INTERVAL:-600}
+    # every AGENT_INTERVAL seconds: pick up new files, read them, re-render the vault. Idle runs cost nothing.
+    # The log file is what the web UI reads to show progress, so keep it in the state folder.
+    command: ["sh", "-c", "while true; do python agent/vault_agent.py run 2>&1 | tee -a /app/vaults/main/state/agent.log; sleep $$AGENT_INTERVAL; done"]
+    volumes:
+      - ./vaults:/app/vaults
+      - ./agent/rules.yaml:/app/agent/rules.yaml:ro
+
+volumes:
+  ollama:

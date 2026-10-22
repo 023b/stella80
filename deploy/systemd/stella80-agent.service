@@ -1,0 +1,13 @@
+[Unit]
+Description=STELLA-80 vault agent: lecture files to an Obsidian knowledge graph (one run)
+
+[Service]
+Type=oneshot
+WorkingDirectory=@DIR@
+Environment=VAULT_AGENT_CONFIG=@DIR@/vaults/main/agent.yaml
+ExecStart=@DIR@/.venv/bin/python agent/vault_agent.py run
+Nice=10
+IOSchedulingClass=idle
+TimeoutStartSec=infinity
+StandardOutput=append:@DIR@/vaults/main/state/agent.log
+StandardError=append:@DIR@/vaults/main/state/agent.log

@@ -1,0 +1,54 @@
+# STELLA-80 configuration. Copy to stella80.yaml (scripts/init.sh does this for you) and edit.
+# Relative paths are relative to this file. ~ works.
+
+# solo   = one person, this machine only. No login screen; the app refuses to listen on anything but 127.0.0.1.
+# shared = a home server for you and friends. Personal passphrases (stella80/manage.py), admin console,
+#          group chat, leaderboard, per-person limits. Put it behind Tailscale or a reverse proxy with HTTPS.
+mode: solo
+
+# host: 127.0.0.1           # bare metal only. Default: 127.0.0.1 in solo, 0.0.0.0 in shared. In Docker use STELLA80_BIND in .env
+port: 8480
+timezone: Europe/London     # day boundaries for streaks, the board and daily summaries
+data_dir: data              # chat history, search index, signing key
+solo_user: me               # solo mode: the name of the one local account
+admin_contact: your admin   # shared mode: how messages name the person to ask ("Ask your admin ...")
+# trust_ip_header: cf-connecting-ip   # behind Cloudflare or another proxy: header that carries the real client IP (login rate limit)
+
+# One Ollama instance is fine. If you run two (for example one on the GPU for answers and one on the CPU for the
+# background agent), point them here. In Docker, OLLAMA_URL in compose.yaml overrides both.
+ollama:
+  study: http://127.0.0.1:11434
+  background: http://127.0.0.1:11434
+embed_model: nomic-embed-text
+ram_guard: true             # check free RAM before loading a big model and fall back to QUICK. Turn off if Ollama is on another machine
+
+# The three engine knobs on the front panel. Any Ollama model works; pick what fits your RAM or VRAM.
+# host: study or background. vision: whether the model can read pasted images.
+engines:
+  quick:
+    model: qwen3.5:4b
+    host: study
+    vision: true
+    blurb: Small and fast. Lookups, definitions, flashcards.
+  scholar:
+    model: gemma4:26b-a4b-it-qat
+    host: study
+    vision: true
+    blurb: The all-rounder. Reads images.
+  deep:
+    model: qwen3:30b-a3b
+    host: background
+    vision: false
+    blurb: Slower start, strongest at maths with THINK on.
+
+# Obsidian vaults. Each one is a folder; its name is its id.
+# With agent_config, the vault agent turns the files in its source folder into notes in this vault (see docs/VAULT-AGENT.md).
+# With path only, STELLA-80 just reads an existing Obsidian vault as it is.
+vaults:
+  - agent_config: vaults/main/agent.yaml
+    title: My study vault
+    student: a university student            # "You are STELLA-80, a study tutor for <student>."
+    # code_hint: Give one minimal runnable Python script using numpy and opencv ...   (what CODE mode should produce)
+  # - path: ~/Documents/Obsidian/My Notes
+  #   title: Personal notes
+  #   student: an MSc Data Science student

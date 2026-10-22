@@ -1,0 +1,23 @@
+# your own setup and data
+/stella80.yaml
+/.env
+/data/
+/vaults/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+bot-token
+secret.json
+handout.txt
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# editors and OS
+.idea/
+.vscode/
+.DS_Store

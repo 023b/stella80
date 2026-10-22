@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" data-theme="oled">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STELLA-80</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%232b2016'/%3E%3Crect y='9' width='16' height='2' fill='%23c8561e'/%3E%3Crect y='11' width='16' height='2' fill='%23e0a526'/%3E%3Crect y='13' width='16' height='2' fill='%237a8b2c'/%3E%3Ctext x='2' y='8' font-size='7' fill='%23ffb000' font-family='monospace'%3E80%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="static/vendor/katex/katex.min.css">
+<link rel="stylesheet" href="static/style.css">
+<link rel="stylesheet" href="static/comms.css">
+<link rel="stylesheet" href="static/hub.css">
+</head>
+<body>
+<div class="case">
+  <header class="badge-bar">
+    <button class="icon-key only-narrow" id="toggle-side" title="Chats">&#9776;</button>
+    <div class="brand">
+      <span class="brand-name">STELLA<span class="dash">-</span>80</span>
+      <span class="brand-sub">PERSONAL STUDY COMPUTER</span>
+    </div>
+    <div class="stripes" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <button class="me-chip" id="me-chip" type="button" title="Settings" hidden><b id="me-dot"></b><span id="me-name"></span></button>
+    <div class="people" id="people" aria-label="Who is online"></div>
+    <button class="key key-cream small" id="hub-open" type="button">BOARD</button>
+    <button class="key key-cream small chat-btn" id="chat-open" type="button">CHAT<i class="badge" id="comms-badge" hidden></i></button>
+    <button class="sys-pill" id="sys-open" type="button" title="Stella status: click for details" aria-expanded="false"><b id="sys-dot"></b><span id="sys-word">...</span></button>
+    <button class="icon-key only-narrow" id="toggle-src" title="Sources">&#9638;</button>
+  </header>
+
+  <div class="body">
+    <aside class="side" id="side">
+      <button class="key key-orange key-wide" id="new-chat">NEW SESSION <kbd>^K</kbd></button>
+      <input class="tape-input" id="chat-search" placeholder="search sessions..." autocomplete="off">
+      <div class="chat-list" id="chat-list"></div>
+      <div class="side-foot">
+        <button class="key key-cream key-wide small" id="reindex">RE-READ VAULT</button>
+        <button class="vault-line" id="vault-line" type="button" title="Vault details"><b id="vault-dot"></b><span id="idx-line">&nbsp;</span></button>
+      </div>
+    </aside>
+
+    <main class="center">
+      <div class="bezel">
+        <div class="screen" id="screen">
+          <div class="scroll" id="log"></div>
+          <div class="scanlines" aria-hidden="true"></div>
+        </div>
+        <div class="bezel-label"><span id="screen-subject">ALL MODULES</span><span id="screen-model">SCHOLAR</span></div>
+      </div>
+
+      <section class="deck" id="deck">
+        <button type="button" class="deck-toggle" id="deck-toggle"><span id="deck-summary"></span><span class="chev">CONTROLS <i class="arr">&#9662;</i></span></button>
+        <div class="deck-row">
+          <div class="group grow">
+            <div class="group-label">MODULE</div>
+            <div class="carts" id="subjects"></div>
+          </div>
+        </div>
+        <div class="deck-row">
+          <div class="group">
+            <div class="group-label">ENGINE</div>
+            <div class="engine">
+              <div class="knob" id="knob" tabindex="0" title="Click or arrow keys to turn"><div class="knob-cap"><i></i></div></div>
+              <div class="engine-opts" id="models"></div>
+            </div>
+            <button class="key key-cream small unload" id="unload" type="button" title="Unload the loaded models to free memory">UNLOAD MODELS</button>
+          </div>
+          <div class="group grow">
+            <div class="group-label">MODE</div>
+            <div class="modes" id="modes"></div>
+          </div>
+          <div class="group">
+            <div class="group-label">SWITCHES</div>
+            <div class="switches">
+              <label class="rocker" title="Let the model reason before answering (slower, better for maths)"><input type="checkbox" id="sw-think"><span class="rk"></span><span class="rl">THINK</span></label>
+              <label class="rocker" title="Plots, diagrams and formulas"><input type="checkbox" id="sw-vis" checked><span class="rk"></span><span class="rl">VISUALS</span></label>
+              <label class="rocker" title="Answer only from your vault, no outside knowledge"><input type="checkbox" id="sw-strict"><span class="rk"></span><span class="rl">VAULT ONLY</span></label>
+            </div>
+          </div>
+          <div class="group">
+            <div class="group-label">DEPTH</div>
+            <div class="seg vertical" id="depth-seg">
+              <button data-v="brief">BRIEF</button><button data-v="normal">NORMAL</button><button data-v="deep">DEEP</button>
+            </div>
+          </div>
+        </div>
+
+        <form class="input-row" id="ask">
+          <div class="attach-strip" id="attach-strip"></div>
+          <div class="input-wrap">
+            <span class="prompt-glyph">&gt;</span>
+            <textarea id="input" rows="1" placeholder="ask about your notes..."></textarea>
+            <label class="icon-key" title="Attach image (or paste one)"><input type="file" id="file" accept="image/*" multiple hidden>&#x2398;</label>
+            <button class="key key-orange send" id="send" type="submit">RUN</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <aside class="sources" id="sources">
+      <div class="src-head"><span>REFERENCE TRAY</span><span id="src-count"></span></div>
+      <div class="src-list" id="src-list"><p class="muted">Sources from your vault appear here when you ask something.</p></div>
+    </aside>
+  </div>
+</div>
+
+<div class="printout-wrap" id="printout" hidden>
+  <div class="printout">
+    <div class="perf left"></div><div class="perf right"></div>
+    <div class="printout-bar"><span id="po-path"></span><span><button class="pkey" id="po-ask">ASK ABOUT THIS</button><button class="pkey" id="po-close">TEAR OFF &#x2715;</button></span></div>
+    <article class="printout-body md" id="po-body"></article>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" hidden><img alt=""></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<div class="modal-wrap" id="hub" hidden><section class="modal hub" role="dialog" aria-label="Board">
+  <header class="modal-head"><div class="tabs" id="hub-tabs"><button data-tab="board" class="on">BOARD</button><button data-tab="log">STUDY LOG</button><button data-tab="vault">VAULT</button><button data-tab="admin" id="tab-admin" hidden>ADMIN</button></div><button class="pkey" id="hub-close" type="button">CLOSE &#x2715;</button></header>
+  <div class="modal-body" id="hub-body"></div>
+</section></div>
+<div class="modal-wrap" id="upload" hidden><section class="modal upload" role="dialog" aria-label="Upload files">
+  <header class="modal-head"><span class="modal-title">UPLOAD FILES</span><button class="pkey" id="upload-close" type="button">CLOSE &#x2715;</button></header>
+  <div class="modal-body" id="upload-body"></div>
+</section></div>
+<div class="modal-wrap" id="settings" hidden><section class="modal settings" role="dialog" aria-label="Settings">
+  <header class="modal-head"><span class="modal-title">SETTINGS</span><button class="pkey" id="settings-close" type="button">CLOSE &#x2715;</button></header>
+  <div class="modal-body" id="settings-body"></div>
+</section></div>
+
+<div class="comms-wrap" id="comms" hidden>
+  <section class="comms" role="dialog" aria-label="Group chat">
+    <header class="comms-head"><span class="comms-title">GROUP CHAT</span><button class="pkey" id="comms-close" type="button">CLOSE &#x2715;</button></header>
+    <div class="room-log" id="room-log"></div>
+    <form class="room-form" id="room-form"><input id="room-input" maxlength="1000" placeholder="message everyone..." autocomplete="off"><button class="key key-orange small">SEND</button></form>
+  </section>
+</div>
+
+<div class="syspop" id="syspop" hidden role="dialog" aria-label="Stella status"><div id="sys-body"><p class="muted">Reading Stella...</p></div></div>
+
+<script src="static/vendor/marked.min.js"></script>
+<script src="static/vendor/purify.min.js"></script>
+<script src="static/vendor/katex/katex.min.js"></script>
+<script src="static/vendor/math.js"></script>
+<script src="static/vendor/plotly.min.js" defer></script>
+<script src="static/vendor/mermaid.min.js" defer></script>
+<script src="static/app.js" defer></script>
+<script src="static/comms.js" defer></script>
+<script src="static/hub.js" defer></script>
+<script src="static/upload.js" defer></script>
+</body>
+</html>

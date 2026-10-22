@@ -1,0 +1,10 @@
+[Unit]
+Description=Run the STELLA-80 vault agent every 10 minutes
+
+[Timer]
+OnBootSec=3min
+OnUnitInactiveSec=10min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

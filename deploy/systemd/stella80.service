@@ -1,0 +1,14 @@
+[Unit]
+Description=STELLA-80 study terminal
+After=network-online.target ollama.service
+
+[Service]
+WorkingDirectory=@DIR@
+Environment=STELLA80_CONFIG=@DIR@/stella80.yaml
+ExecStart=@DIR@/.venv/bin/python stella80/app.py
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=8192
+
+[Install]
+WantedBy=default.target

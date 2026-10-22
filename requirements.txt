@@ -1,0 +1,11 @@
+# web app (stella80/)
+fastapi>=0.151
+uvicorn>=0.54
+httpx>=0.28
+numpy>=2.0
+PyYAML>=6.0
+# vault agent (agent/), also needs poppler-utils and ghostscript from your package manager
+requests>=2.32
+pdfminer.six>=20250506
+markitdown[docx,pptx]>=0.1.8
+openpyxl>=3.1

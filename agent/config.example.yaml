@@ -1,0 +1,47 @@
+# Vault agent configuration for one vault. scripts/init.sh copies this to vaults/main/agent.yaml.
+# Relative paths are relative to this file.
+
+src_root: src               # drop lecture files here, one folder per subject: src/Machine-Learning/week1.pdf
+vault_root: vault           # open THIS folder in Obsidian (links are written relative to it)
+vault_dir: Study-Vault      # the vault inside it; also the vault's id in stella80.yaml
+state_dir: state            # the agent's database and log
+
+ollama_url: http://127.0.0.1:11434      # OLLAMA_URL in the environment wins (Docker sets it)
+# study_ollama_url: http://127.0.0.1:11500   # only if STELLA-80 answers from a SEPARATE Ollama on this machine: the agent
+#                                            # unloads big models there when RAM runs short
+# tunnel_cmd: ssh -f -N -L 11434:127.0.0.1:11434 my-server    # Ollama on another machine: command that opens the tunnel
+# load_cmd: ssh my-server cat /proc/loadavg                    # ... and how to read that machine's load
+chat_model: qwen3:30b-a3b               # reads text and extracts concepts (JSON). Smaller works: qwen3:8b, qwen3.5:4b
+vision_model: gemma4:26b-a4b-it-qat     # reads slide images and figures. Smaller works: qwen3.5:4b
+embed_model: nomic-embed-text
+keep_alive: 10m
+rules: ../../agent/rules.yaml           # what counts as a concept, aliases, throttling
+# shared_llm_lock: ../llm.lock          # several vaults on one machine: only one agent loads a big model at a time
+
+# Every top-level folder of src_root becomes a subject. Folders named like COMP3010-ComputerVision show the code.
+auto_courses: true
+courses: {}
+# Or list them yourself (source folder: [vault folder, hub note, tag]) and set auto_courses: false
+#   cv-lectures: [COMP3010-ComputerVision, 00-ComputerVision, comp3010]
+
+exclude_src: []             # folders under src_root to ignore
+src_all: true               # read every file type except video, audio and programs; false = only src_exts
+src_exts: [.pdf, .docx, .pptx, .md]
+max_file_mb: 25
+skip_exts: [.mp4, .mkv, .mov, .avi, .webm, .wmv, .flv, .m4v, .mpg, .mpeg, .mp3, .wav, .m4a, .flac, .aac, .ogg, .wma, .opus,
+            .exe, .dll, .so, .dylib, .pyc, .class, .o, .iso, .dmg, .msi, .tmp, .part, .crdownload]
+require_marker: false       # true = refuse to scan unless src_root/.stfolder exists (protects state if a Syncthing share disappears)
+
+# history: the vault is a git repo, committed after every run. Optional extra copies:
+backup_remote: null         # git remote to push to, for example ssh://my-nas/backups/vault.git
+state_backup: null          # rsync target for state.db
+backup_dir: backups         # daily snapshot of state.db, last 7 kept
+
+chunk_chars: 5000
+max_concepts_per_chunk: 8
+min_mentions_for_note: 2
+merge_cosine: 0.93
+related_per_concept: 6
+
+exclude_vault_names: []
+exclude_vault_prefixes: ["00-"]

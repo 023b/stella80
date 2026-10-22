@@ -1,0 +1,58 @@
+# Edit freely. Read at the start of every run; no restart needed.
+
+# Free-text guidance appended to every prompt (text model and vision model).
+instructions: |
+  Prefer a small number of broad, reusable concepts that a student would revise as one topic
+  (for example "Kalman filter", not "Kalman filter update step equation 3").
+  Do not create separate concepts for worked examples, exercise numbers, slide titles or lab instructions.
+  Do not create concepts for people unless they are the named originator of a method.
+  Use the same name a textbook index would use.
+
+# Concepts to never create (case-insensitive). Substrings are not matched, whole names only.
+ignore:
+  - introduction
+  - summary
+  - conclusion
+  - overview
+  - example
+  - exercise
+  - lecture
+  - lab
+  - tutorial
+  - assessment
+  - coursework
+  - exam
+  - slide
+  - figure
+  - table
+  - question
+  - answer
+  - python
+  - matlab
+
+# Force names together. Left side is the name used in the vault, right side are variants.
+aliases:
+  Kalman filter: [KF, Kalman filtering, Kalman filter algorithm]
+  Scale-invariant feature transform: [SIFT]
+  Simultaneous localisation and mapping: [SLAM, simultaneous localization and mapping]
+  Convolutional neural network: [CNN, ConvNet]
+
+graph:
+  min_docs_for_note: 2          # a concept needs evidence in this many different documents ...
+  min_chunks_alt: 4             # ... or this many separate passages
+  max_concepts_per_chunk: 6
+  related_per_concept: 2        # concept-to-concept links per concept note
+  related_min_cooccur: 3        # ... only if they appear together this many times
+  max_concept_links_per_source: 8
+  max_sources_per_concept: 6
+
+dedupe:
+  near_dup_cosine: 0.96         # passages this similar to one already processed reuse its result, no model call
+  skip_boilerplate: true        # title, outline, thank-you and reference slides
+
+throttle:
+  num_thread: 0                 # Ollama CPU threads per call; 0 lets Ollama decide. Set to about half your cores on a shared box
+  sleep_between_calls_s: 10     # pause after each text chunk, so the machine stays usable
+  vision_sleep_s: 25            # pause after each slide image
+  max_load: 0                   # pause while the 1-minute load average is above this; 0 means the number of CPU cores
+  vision_dpi: 100
