@@ -105,7 +105,16 @@ VISUAL TOOLS (use when they genuinely help understanding, never as decoration):
   For a 3D surface use {"title": "...", "surface": "expression in x and y", "x": [min,max], "y": [min,max]}.
 - Diagram: a fenced block with language `mermaid` (flowchart TD, sequenceDiagram, stateDiagram-v2). Keep node labels short and quote labels that contain symbols, e.g. A["x_k = F x_k-1"].
 - Tables in markdown when comparing methods.
+- Mermaid flowcharts: only nodes and arrows, edge labels as A -->|label| B (one pair of bars). No "Note over" lines (those are for sequenceDiagram only).
+- A real block is the only way anything gets drawn. Never write a placeholder such as "[drawing mermaid ...]" or "see the diagram below" without the block itself.
+  Time curves can be plotted directly, e.g. a rest-to-rest cubic from 0 to 1 over 0..1 s: {"title": "Cubic trajectory", "x": [0, 1], "fns": ["3*x^2-2*x^3", "6*x-6*x^2", "6-12*x"], "labels": ["position", "velocity", "acceleration"]}
 """
+
+DRAW_RE = re.compile(r"\b(draw|plot|graph|chart|diagram|sketch|visuali[sz]e|illustrate|flowchart|show me (?:a|the) (?:curve|figure|picture))\b", re.I)
+DRAW_NOTE = ("\n\nThe student wants a picture. Draw it yourself now with one fenced `plot` block (a curve or surface from a formula) or one fenced `mermaid` block "
+             "(a flow, structure or sequence). The excerpts do not need to contain a figure, and the vault-only rule covers facts, not drawing: take the formula or the "
+             "steps from the excerpts or from standard theory and draw those. Put the block on its own lines, then two or three sentences on how to read it. "
+             "Do not write a placeholder instead of the block, and do not say that no graph was provided.")
 
 
 # ---------------------------------------------------------------- database
@@ -2047,6 +2056,8 @@ async def chat(req: Request):
             msgs.insert(1, {"role": h["role"], "content": h["content"][:2500]})
         user_msg = ("VAULT EXCERPTS:\n\n" + "\n\n---\n\n".join(ctx) if ctx else "VAULT EXCERPTS: (nothing relevant found)") + \
                f"\n\nQUESTION: {question}"
+        if visuals and DRAW_RE.search(question):
+            user_msg += DRAW_NOTE
         um = {"role": "user", "content": user_msg}
         if images:
             um["images"] = images
