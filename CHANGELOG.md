@@ -21,6 +21,13 @@ First public release. Extracted from the author's own deployment (one mini PC, o
   `scripts/eval.py` with `docs/EVAL.md` (retrieval hit@k per ranker, citation support, VAULT ONLY refusals, latency).
 - Architecture diagram rendered from `docs/architecture.mmd` by `scripts/render_diagram.py`.
 
+### Fixed
+- A repaint queued while an answer streamed could run after the final render and put "[ drawing plot ... ]" back over the drawn plot.
+- Plot JSON with broken data points still draws its curves; `t`, `theta`, `**` and `y =` are accepted in plot functions; a failed
+  Mermaid render no longer leaves a "Syntax error" graphic in the page.
+- A short standalone question (for example an unrelated one) no longer borrows the previous question for its search, which made the
+  tutor answer about the old topic instead of refusing.
+
 ### Changed
 - `retrieve()` takes a `mode` (hybrid, keyword, embeddings) so each ranker can be measured alone.
 - The solo-mode "refuse to listen beyond loopback" check is a function, `bind_check()`, so it can be tested.
