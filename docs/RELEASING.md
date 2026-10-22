@@ -12,6 +12,10 @@ git tag -a v0.1.0 -m "STELLA-80 0.1.0: first public release"
 git push origin main v0.1.0        # publishing: only when you are ready
 ```
 
+GitHub shows MP4 files in the repository as a download, not a player. For an inline player in the README, drag `demo.mp4` into the
+description box of a pull request or issue (do not submit it), copy the `https://github.com/user-attachments/...` link it creates, and
+paste that link on a line of its own in `README.md`.
+
 Then on GitHub: Releases, Draft a new release, choose the tag `v0.1.0`, paste the 0.1.0 section of `CHANGELOG.md`, and attach
 `docs/media/demo.mp4`. Make the repository public first (Settings, General, Danger Zone) if it is still private.
 
