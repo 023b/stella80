@@ -7,7 +7,9 @@ It runs on your own machine, with no cloud, no API keys and no telemetry.
 
 ![STELLA-80 main screen: an answer with a plot drawn from the lecture notes, sources in the reference tray](docs/screenshots/terminal.png)
 
-[Watch the 75-second demo](docs/media/demo.mp4): a cited answer, the note behind a citation, a VAULT ONLY refusal, and the vault tab. Recorded in real time against a CPU-only laptop; the long waits are sped up and captioned as such.
+[![A 25-second preview of the demo: choosing VAULT ONLY, a cited answer, the note behind a citation, a refusal, and the vault tab](docs/media/demo.gif)](docs/media/demo.mp4)
+
+Preview above, sped up. The full 75-second video is [docs/media/demo.mp4](docs/media/demo.mp4) (GitHub offers MP4 files as a download rather than a player). It shows a cited answer, the note behind a citation, a VAULT ONLY refusal, and the vault tab, recorded in real time on a CPU-only laptop; the long waits are sped up and captioned as such.
 
 STELLA-80 has two halves:
 
