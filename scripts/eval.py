@@ -211,19 +211,25 @@ def ram_gb():
 
 
 def render(args, ret, gen, n_notes, n_chunks, n_in, n_out, model_ok):
+    blend = args.grounding == "blend"
     L = [f"Run on {datetime.date.today().isoformat()}. Hardware: {cpu_name()}, {ram_gb()} RAM, {'CPU only' if args.cpu else 'accelerator not recorded'}. "
          f"Answer model: `{args.model}`. Embedding model: `{args.embed_model}`. Notes indexed: {n_notes} files, {n_chunks} chunks. "
          f"Questions: {n_in} in scope, {n_out} out of scope. One run per question at the app's normal answer temperature (0.4), so repeat runs will vary.", ""]
-    L += ["### Retrieval: does the right passage appear in the top k?", "",
-          "| Ranker | hit@1 | hit@3 | hit@5 |", "|---|---|---|---|"]
-    for m in MODES:
-        label = {"keyword": "Keyword only (BM25)", "embeddings": "Embeddings only", "hybrid": "Hybrid (BM25 + embeddings, rank fusion)"}[m]
-        L.append(f"| {label} | " + " | ".join(pct(ret[m]["chunk"][k], n_in) for k in KS) + " |")
-    L += ["", "Passage-level: a retrieved chunk counts if it contains one of the question's `support` phrases.", "",
-          "| Ranker | file hit@1 | file hit@3 | file hit@5 |", "|---|---|---|---|"]
-    for m in MODES:
-        L.append(f"| {m} | " + " | ".join(pct(ret[m]["file"][k], n_in) for k in KS) + " |")
-    L += ["", "File-level: the expected note appears in the top k.", "", "### Answers with VAULT ONLY on", ""]
+    if not blend:   # retrieval does not depend on the grounding switch, so it is reported once, with the VAULT ONLY run
+        L += ["### Retrieval: does the right passage appear in the top k?", "",
+              "| Ranker | hit@1 | hit@3 | hit@5 |", "|---|---|---|---|"]
+        for m in MODES:
+            label = {"keyword": "Keyword only (BM25)", "embeddings": "Embeddings only", "hybrid": "Hybrid (BM25 + embeddings, rank fusion)"}[m]
+            L.append(f"| {label} | " + " | ".join(pct(ret[m]["chunk"][k], n_in) for k in KS) + " |")
+        L += ["", "Passage-level: a retrieved chunk counts if it contains one of the question's `support` phrases.", "",
+              "| Ranker | file hit@1 | file hit@3 | file hit@5 |", "|---|---|---|---|"]
+        for m in MODES:
+            L.append(f"| {m} | " + " | ".join(pct(ret[m]["file"][k], n_in) for k in KS) + " |")
+        L += ["", "File-level: the expected note appears in the top k.", ""]
+    L += ["### Answers in the default mode (VAULT ONLY off)" if blend else "### Answers with VAULT ONLY on", ""]
+    if blend:
+        L += ["With the switch off the tutor may add general knowledge (marked *(general)*), so out-of-scope questions are expected "
+              "to be answered, not refused; the refusal rows are only meaningful with VAULT ONLY on.", ""]
     if gen is None:
         why = "skipped with --skip-generation" if args.skip_generation else f"model {args.model} not available" if not model_ok else "generation did not run"
         L += [f"{NM} ({why}).", ""]
@@ -288,12 +294,13 @@ def main():
 
     body = render(args, ret, gen, n_notes, n_chunks, len(ins), len(qs) - len(ins), model_ok)
     out = Path(args.out)
-    start, end = "<!-- results:start -->", "<!-- results:end -->"
+    tag = "results-blend" if args.grounding == "blend" else "results"
+    start, end = f"<!-- {tag}:start -->", f"<!-- {tag}:end -->"
     text = out.read_text() if out.exists() else f"{start}\n{end}\n"
     if start not in text or end not in text:
         raise SystemExit(f"{out} has no {start} ... {end} markers.")
     out.write_text(text[:text.index(start) + len(start)] + "\n\n" + body + "\n" + text[text.index(end):])
-    raw = out.with_name("eval-results.json")
+    raw = out.with_name("eval-results-blend.json" if args.grounding == "blend" else "eval-results.json")
     raw.write_text(json.dumps({"date": datetime.date.today().isoformat(), "model": args.model, "embed_model": args.embed_model,
                                "grounding": args.grounding, "retrieval": per_q, "answers": rows}, indent=1, ensure_ascii=False) + "\n")
     print(body)

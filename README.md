@@ -13,7 +13,7 @@ STELLA-80 has two halves:
    notebooks, spreadsheets, code and images. It turns them into an **Obsidian knowledge graph** with concept notes,
    per-course concept maps and links that bridge courses. A vision model reads the slide images too.
 2. **The study terminal** is a web UI made to feel like a piece of 80s hardware. It answers from *your* notes and
-   cites every claim back to the exact slide or page.
+   cites its sources back to the exact slide or page.
 
 Everything runs on local models through [Ollama](https://ollama.com). The whole thing was built and is used daily
 on a single mini PC, a Ryzen with a Radeon 780M iGPU, serving one student and three friends.
@@ -25,8 +25,9 @@ on a single mini PC, a Ryzen with a Radeon 780M iGPU, serving one student and th
 ## What makes it different
 
 **It knows your course, not the internet's version of it.**
-- Search combines keyword matching (BM25) with embeddings over your own notes. Every answer cites its sources
-  as [1], [2], and you can open the note behind each one.
+- Search combines keyword matching (BM25) with embeddings over your own notes. Answers cite their sources
+  as [1], [2], and you can open the note behind each one. How reliably depends on the model: in the bundled evaluation a 4B
+  model cited every answerable question with VAULT ONLY on, and 5 to 7 of 7 across two runs with it off.
 - Flip the **VAULT ONLY** switch and the tutor answers only from your material. If something isn't there, it says so.
 - In normal mode, anything the tutor adds beyond your notes is marked *(general)*. Where your lecturer's notation
   differs from the textbook, it follows your lecturer's.

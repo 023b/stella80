@@ -72,6 +72,48 @@ File-level: the expected note appears in the top k.
 
 <!-- results:end -->
 
+## Results: default mode (VAULT ONLY off)
+
+Same questions and model, run with `python scripts/eval.py --grounding blend` (raw answers in
+[eval-results-blend.json](eval-results-blend.json)).
+
+<!-- results-blend:start -->
+
+Run on 2026-10-22. Hardware: Intel(R) Core(TM) Ultra 5 226V, 15 GB RAM, CPU only. Answer model: `qwen3.5:4b`. Embedding model: `nomic-embed-text`. Notes indexed: 3 files, 15 chunks. Questions: 7 in scope, 3 out of scope. One run per question at the app's normal answer temperature (0.4), so repeat runs will vary.
+
+### Answers in the default mode (VAULT ONLY off)
+
+With the switch off the tutor may add general knowledge (marked *(general)*), so out-of-scope questions are expected to be answered, not refused; the refusal rows are only meaningful with VAULT ONLY on.
+
+| Measure | Result |
+|---|---|
+| In-scope answers with at least one valid [n] citation | 100% (7/7) |
+| Citations whose source contains the supporting text | 46% (6/13) |
+| Citations to a source number that does not exist | 0 of 13 |
+| In-scope questions refused | 0% (0/7) |
+| Out-of-scope questions refused | 33% (1/3) |
+| Out-of-scope answers that carry [n] markers (see note below) | 33% (1/3) |
+| Latency, median, question to last token (s) | 34 |
+| Latency, 90th percentile (s) | 55 |
+| Time to first token, median (s) | 15.4 |
+| Generation speed, mean (tokens/s) | 8.9 |
+| Answer length, mean (tokens) | 149 |
+
+<!-- results-blend:end -->
+
+Notes on that run (read from `eval-results-blend.json`; they describe it only):
+
+- **Citation presence varies from run to run.** An earlier run with identical settings had 5 of 7 in-scope answers carrying a
+  citation, this one has 7 of 7, and the same happened informally while recording the demo (some answers to the same question had no
+  `[n]` at all). With one sample per question at temperature 0.4, treat the citation rate in this mode as "usually, not always"
+  for a 4B model. With VAULT ONLY on, the one run above had 7 of 7. That is two runs in one mode and one in the other, so the
+  gap between the modes is suggestive, not established.
+- **The refusal row undercounts.** The regular expression missed the sourdough answer ("This question does not apply to your CS
+  modules"), which is a decline in substance. Read by eye, two of the three out-of-scope questions were declined.
+- **The unmarked general answer is a defect.** Asked about self-attention in transformers, the model answered in full from
+  general knowledge and did not mark any of it *(general)*, which the tutor prompt requires in this mode. The World Cup answer did
+  mark its fact. Nothing in the app enforces the marker; it relies on the model following the prompt.
+
 ## Notes on the run above (2026-10-22)
 
 Read from `eval-results.json`; they describe that run only and are not regenerated.
