@@ -28,6 +28,9 @@ First public release. Extracted from the author's own deployment (one mini PC, o
 - A short standalone question (for example an unrelated one) no longer borrows the previous question for its search, which made the
   tutor answer about the old topic instead of refusing.
 
+- A Mermaid diagram with brackets inside a label (for example `PK: (emp_id, proj_id)`) is repaired and drawn instead of failing to
+  parse. `ln`, `sigmoid` and `relu` work in plots.
+
 ### Changed
 - `retrieve()` takes a `mode` (hybrid, keyword, embeddings) so each ranker can be measured alone.
 - The solo-mode "refuse to listen beyond loopback" check is a function, `bind_check()`, so it can be tested.

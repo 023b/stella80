@@ -100,6 +100,8 @@ function looseJSON(s) {
   }
 }
 
+try { math.import({ ln: Math.log, sigmoid: x => 1 / (1 + Math.exp(-x)), relu: x => Math.max(0, x) }, { override: false }); } catch { }
+
 function plotColors() {
   return [cssVar("--scr-fg"), cssVar("--scr-hi"), "#e0703a", "#a3b443", "#6fb3c4", "#d58ab0"];
 }
@@ -169,11 +171,22 @@ function initMermaid() {
   return (mermaidReady = true);
 }
 
+// A small model often writes labels Mermaid will not parse (unquoted brackets, "Note over" in a flowchart). Try the diagram as written,
+// then with such labels repaired, then with brackets removed from labels, and draw the first version that parses.
+function mermaidVariants(code) {
+  const base = code.replace(/^\s*Note (?:over|left of|right of) .*$/gim, "");
+  const quoted = base.replace(/(\b[A-Za-z_]\w*)\[([^\]"\n]*[()][^\]"\n]*)\]/g, '$1["$2"]');
+  const plain = base.replace(/\[([^\]"\n]*)\]/g, (m, t) => "[" + t.replace(/[()]/g, " ") + "]");
+  return [...new Set([base, quoted, plain])];
+}
+
 async function drawMermaid(el, code) {
   if (!mermaidReady && !initMermaid()) { setTimeout(() => drawMermaid(el, code), 300); return; }
-  const id = "mm" + (++mermaidN);
+  const id = "mm" + (++mermaidN), variants = mermaidVariants(code);
+  let use = variants[0];
+  for (const v of variants) { try { if (await mermaid.parse(v, { suppressErrors: true })) { use = v; break; } } catch { } }
   try {
-    const { svg } = await mermaid.render(id, code.replace(/^\s*Note (?:over|left of|right of) .*$/gim, ""));
+    const { svg } = await mermaid.render(id, use);
     el.innerHTML = svg;
   } catch (e) {
     document.getElementById("d" + id)?.remove();   // mermaid leaves a "Syntax error" graphic in the page when it fails
