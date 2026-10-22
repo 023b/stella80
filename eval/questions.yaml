@@ -1,0 +1,65 @@
+# Evaluation questions for scripts/eval.py. Scaffold: 10 questions over examples/sample-src (three short lectures).
+# Replace or extend with your own 30 to 50 questions over a vault you can publish.
+#
+#   id        short stable name
+#   question  asked exactly as written
+#   scope     in  = the notes can answer it (needs sources and support)
+#             out = the notes cannot answer it (a VAULT ONLY answer should refuse)
+#   sources   in-scope only: file names (not paths) of the note(s) a correct answer should come from
+#   support   in-scope only: short phrases that appear verbatim in the supporting passage (case and spacing are ignored).
+#             A retrieved chunk counts as supporting evidence if it contains at least one of them.
+#             Avoid LaTeX in phrases: the check is a plain text match.
+questions:
+  - id: lr-too-large
+    question: What happens in gradient descent if the learning rate is too large?
+    scope: in
+    sources: [03-gradient-descent.md]
+    support: ["each step overshoots the minimum", "oscillates or diverges"]
+
+  - id: momentum-oscillation
+    question: How does momentum reduce oscillation?
+    scope: in
+    sources: [03-gradient-descent.md]
+    support: ["damps oscillation across narrow valleys", "running average of past gradients"]
+
+  - id: backprop-memory
+    question: Why does training a neural network need more memory than inference?
+    scope: in
+    sources: [04-backpropagation.md]
+    support: ["much more memory than inference", "the backward pass reuses them"]
+
+  - id: vanishing-sigmoid
+    question: What is the vanishing gradient problem and why does the sigmoid cause it?
+    scope: in
+    sources: [04-backpropagation.md]
+    support: ["derivative is at most 0.25", "vanishing gradient problem"]
+
+  - id: batchnorm-test-time
+    question: What does batch normalisation do at test time?
+    scope: in
+    sources: [02-training-cnns.md]
+    support: ["running averages of the mean and variance"]
+
+  - id: weight-sharing
+    question: Why does weight sharing in a CNN give translation equivariance?
+    scope: in
+    sources: [02-training-cnns.md]
+    support: ["shared across every position", "responds to the same pattern wherever it appears"]
+
+  - id: sgd-settings
+    question: Which SGD settings are typical for training an image classifier?
+    scope: in
+    sources: [02-training-cnns.md]
+    support: ["momentum 0.9", "initial learning rate of 0.1"]
+
+  - id: oos-attention
+    question: How does self-attention in a transformer compute its attention weights?
+    scope: out
+
+  - id: oos-sourdough
+    question: How do I make a sourdough starter from scratch?
+    scope: out
+
+  - id: oos-worldcup
+    question: Who won the 2018 FIFA World Cup?
+    scope: out
