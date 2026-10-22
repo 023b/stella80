@@ -52,7 +52,7 @@ def main():
             try:
                 name, pw = add_user(c, name, a.display, a.vault, a.admin)
             except ValueError as e:
-                raise SystemExit(str(e))
+                raise SystemExit(str(e)) from None
             print(f"Added {name} ({'admin' if a.admin else 'student'}, vault {a.vault}). Passphrase, shown once: {pw}")
         elif a.cmd == "passwd":
             pw = new_passphrase() if a.random else ask()
