@@ -3,9 +3,7 @@
 **A personal study computer that has read all your lecture notes.**
 It runs on your own machine, with no cloud, no API keys and no telemetry.
 
-<!-- Add screenshots before publishing: docs/screenshots/terminal.png (main screen), board.png, obsidian-graph.png
-![STELLA-80 main screen](docs/screenshots/terminal.png)
--->
+![STELLA-80 main screen: an answer with a plot drawn from the lecture notes, sources in the reference tray](docs/screenshots/terminal.png)
 
 STELLA-80 has two halves:
 
@@ -62,6 +60,17 @@ paste a screenshot of a slide and ask about it. Eight tutor personas are built i
 **It has a personality.**
 The UI has amber, green, paper and OLED themes, engine knobs and rocker switches, and a "reasoning tape" that shows
 the model thinking. Answers are rendered like good handwritten study notes, without emoji or "Great question!".
+
+## Screenshots
+
+From the author's own deployment: about 1,000 notes from four modules. Chat history and names are blurred.
+
+| | |
+|---|---|
+| ![A TEACH answer on RANSAC, every claim cited to a numbered source](docs/screenshots/answer.png) | ![The vault tab: agent progress per course and the processing queue](docs/screenshots/vault.png) |
+| **Cited answers.** Every [n] opens the note it came from. | **The vault agent at work.** Progress per course, the queue and uploads. |
+| ![A processed lecture note opened as a printout: section summaries and linked concepts](docs/screenshots/printout.png) | ![The control deck: module selector, engine knob, study modes, switches and depth](docs/screenshots/controls.png) |
+| **What the agent writes.** One note per lecture, with summaries and concept links, opened here as a printout. | **The control deck.** Module, engine, study mode, switches and depth. |
 
 ## Two ways to run it
 
