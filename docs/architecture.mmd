@@ -1,0 +1,37 @@
+flowchart TB
+    subgraph IN["1. Your material"]
+        direction LR
+        F["Lecture files<br/>pdf, pptx, docx, ipynb,<br/>csv, code, images"]
+        U["Uploads<br/>from the web UI"]
+        N["Your own notes<br/>(never edited)"]
+    end
+
+    subgraph AG["2. Vault agent: reads files, builds the knowledge graph"]
+        direction LR
+        X["Extract text,<br/>chunk by page<br/>or slide"] --> L["Local LLM:<br/>concepts as JSON,<br/>each with a quote"] --> Q{"Quote is in<br/>the source<br/>text?"}
+        Q -- "no: dropped" --> D(["discarded"])
+        Q -- yes --> M["Merge duplicates<br/>embeddings + aliases"] --> S[("agent state<br/>SQLite")]
+    end
+
+    subgraph VT["3. Obsidian vault: open it in Obsidian"]
+        direction LR
+        A["_auto/<br/>concept notes, course maps,<br/>cross-course links"]
+        R["_raw/<br/>untouched text,<br/>no AI"]
+    end
+
+    subgraph WEB["4. STELLA-80: search, answer, cite"]
+        direction LR
+        I[("index<br/>FTS5 + vectors")] --> H["Hybrid retrieval<br/>BM25 + cosine,<br/>rank fusion"] --> P["Prompt: mode,<br/>VAULT ONLY,<br/>numbered excerpts"] --> K["Answer queue<br/>one at a time"] --> O["Ollama<br/>QUICK / SCHOLAR<br/>/ DEEP"] --> UI["Streamed answer<br/>with [n] citations,<br/>plots, diagrams"]
+    end
+
+    IN --> AG
+    AG -->|"deterministic render"| VT
+    VT -->|"re-indexed when files change"| WEB
+    WEB -. "click [n] to open the note" .-> VT
+
+    classDef store fill:#fff4d6,stroke:#b07a2a,color:#2b2016
+    classDef model fill:#fde3d3,stroke:#c8561e,color:#2b2016
+    classDef plain fill:#f6f2e8,stroke:#8f7f60,color:#2b2016
+    class S,I store
+    class L,O model
+    class F,U,N,X,M,A,R,H,P,K,UI,D plain

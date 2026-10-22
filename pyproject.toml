@@ -1,0 +1,14 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+timeout = 60
+
+[tool.ruff]
+line-length = 160
+target-version = "py311"
+extend-exclude = ["stella80/static"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B"]
+# The code base favours short one-line statements and compact helpers; these rules only restyle that.
+ignore = ["E401", "E501", "E701", "E702", "E731", "E741", "B008", "B905"]

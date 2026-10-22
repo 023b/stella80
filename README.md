@@ -1,9 +1,13 @@
 # STELLA-80
 
+[![CI](https://github.com/023b/stella80/actions/workflows/ci.yml/badge.svg)](https://github.com/023b/stella80/actions/workflows/ci.yml)
+
 **A personal study computer that has read all your lecture notes.**
 It runs on your own machine, with no cloud, no API keys and no telemetry.
 
 ![STELLA-80 main screen: an answer with a plot drawn from the lecture notes, sources in the reference tray](docs/screenshots/terminal.png)
+
+[Watch the 75-second demo](docs/media/demo.mp4): a cited answer, the note behind a citation, a VAULT ONLY refusal, and the vault tab. Recorded in real time against a CPU-only laptop; the long waits are sped up and captioned as such.
 
 STELLA-80 has two halves:
 
@@ -11,16 +15,21 @@ STELLA-80 has two halves:
    notebooks, spreadsheets, code and images. It turns them into an **Obsidian knowledge graph** with concept notes,
    per-course concept maps and links that bridge courses. A vision model reads the slide images too.
 2. **The study terminal** is a web UI made to feel like a piece of 80s hardware. It answers from *your* notes and
-   cites every claim back to the exact slide or page.
+   cites its sources back to the exact slide or page.
 
 Everything runs on local models through [Ollama](https://ollama.com). The whole thing was built and is used daily
 on a single mini PC, a Ryzen with a Radeon 780M iGPU, serving one student and three friends.
 
+> **Status:** a personal tool, shared in case it is useful to someone else. Small user base (four people), one tested
+> hardware setup, version 0.1, so expect rough edges and configuration changes between minor versions. It has an offline
+> test suite and a small evaluation harness ([below](#evaluation)), not a production track record.
+
 ## What makes it different
 
 **It knows your course, not the internet's version of it.**
-- Search combines keyword matching (BM25) with embeddings over your own notes. Every answer cites its sources
-  as [1], [2], and you can open the note behind each one.
+- Search combines keyword matching (BM25) with embeddings over your own notes. Answers cite their sources
+  as [1], [2], and you can open the note behind each one. How reliably depends on the model: in the bundled evaluation a 4B
+  model cited every answerable question with VAULT ONLY on, and 5 to 7 of 7 across two runs with it off.
 - Flip the **VAULT ONLY** switch and the tutor answers only from your material. If something isn't there, it says so.
 - In normal mode, anything the tutor adds beyond your notes is marked *(general)*. Where your lecturer's notation
   differs from the textbook, it follows your lecturer's.
@@ -95,15 +104,21 @@ docker compose exec ollama ollama pull qwen3.5:4b
 
 ## How it fits together
 
-```
- lecture files ──► vault agent ──► Obsidian vault ◄── you, in Obsidian
- (pdf, pptx,        (Ollama:        _auto/  concepts, sources, maps
-  docx, ipynb,       text + vision  _raw/   untouched text
-  csv, images)       models)        your own notes (never edited)
-                                          │
-                                          ▼
-                         STELLA-80 web app: index (FTS5 + embeddings)
-                         ──► retrieval ──► Ollama ──► cited, streamed answer
+![Architecture: source files go through the vault agent, which only keeps concepts whose quote is found in the source, into an Obsidian vault; the web app indexes the vault and answers through Ollama with citations](docs/architecture.png)
+
+The diagram source is [docs/architecture.mmd](docs/architecture.mmd) (also as [SVG](docs/architecture.svg)); `scripts/render_diagram.py` renders it.
+
+## Evaluation
+
+`scripts/eval.py` measures retrieval (keyword vs embeddings vs hybrid), whether citations point at supporting text, how
+VAULT ONLY handles questions the notes cannot answer, and speed, on a question set you can extend. Results, definitions and
+the limits of the method are in [docs/EVAL.md](docs/EVAL.md). The bundled set is tiny (three sample lectures, ten
+questions), so treat the numbers as a demonstration of the harness, not a benchmark.
+
+```bash
+pip install -r requirements-dev.txt
+pytest                      # 52 offline tests, about two seconds
+python scripts/eval.py      # needs Ollama running with the models pulled
 ```
 
 ## Hardware
@@ -136,16 +151,19 @@ the CPU for the agent, and both URLs can be set in the config.
 - Answer quality depends on the model you run. Small models cite well but reason less well.
 - The first pass over a big course takes hours on a CPU. After that, only new or changed files are read.
 - Tested on Linux. macOS should work with Docker. Windows is untested.
+- Answers run one at a time per machine (a queue), so four people asking at once wait for each other.
 
 ## Repository layout
 
 ```
 stella80/        web app (FastAPI, SQLite FTS5, vanilla JS), manage.py for accounts
 agent/           vault agent and rules.yaml
+tests/           offline pytest suite (retrieval, quote verification, auth)
+eval/            questions.yaml for scripts/eval.py
 deploy/systemd/  user units for bare metal
-scripts/         init.sh, install-systemd.sh
-docs/            INSTALL.md, VAULT-AGENT.md
-examples/        a sample lecture to try it with
+scripts/         init.sh, install-systemd.sh, eval.py, render_diagram.py, record_demo.py
+docs/            INSTALL.md, VAULT-AGENT.md, EVAL.md, architecture diagram, RELEASING.md
+examples/        sample lectures to try it with
 ```
 
 ## Licence

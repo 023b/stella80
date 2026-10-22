@@ -91,8 +91,16 @@ function md(text, { wikilinks = false } = {}) {
 
 function looseJSON(s) {
   try { return JSON.parse(s); } catch { }
-  return JSON.parse(s.replace(/,\s*([}\]])/g, "$1").replace(/([{,]\s*)([A-Za-z_]\w*)\s*:/g, '$1"$2":').replace(/'/g, '"'));
+  try { return JSON.parse(s.replace(/,\s*([}\]])/g, "$1").replace(/([{,]\s*)([A-Za-z_]\w*)\s*:/g, '$1"$2":').replace(/'/g, '"')); } catch (e) {
+    // a small model sometimes breaks the data points; the curves are what matter, so read those fields on their own
+    const spec = {}, head = s.replace(/"(?:points|series)"[\s\S]*$/, ""), grab = k => { const m = new RegExp('"' + k + '"\\s*:\\s*(\\[[^\\[\\]{}]*\\]|"[^"]*")').exec(head); if (!m) return; try { return JSON.parse(m[1]); } catch { } };
+    for (const k of ["title", "x", "y", "fns", "labels", "surface"]) { const v = grab(k); if (v !== undefined) spec[k] = v; }
+    if (!spec.fns && !spec.surface) throw e;
+    return spec;
+  }
 }
+
+try { math.import({ ln: Math.log, sigmoid: x => 1 / (1 + Math.exp(-x)), relu: x => Math.max(0, x) }, { override: false }); } catch { }
 
 function plotColors() {
   return [cssVar("--scr-fg"), cssVar("--scr-hi"), "#e0703a", "#a3b443", "#6fb3c4", "#d58ab0"];
@@ -115,11 +123,11 @@ function drawPlot(el, spec) {
   const fns = [].concat(spec.fns || spec.functions || spec.fn || []);
   fns.forEach((expr, i) => {
     const e = typeof expr === "object" ? expr.expr : expr;
-    const f = math.compile(String(e).replace(/^y\s*=\s*/, ""));
+    const f = math.compile(String(e).replace(/^\s*(?:y|f\(\w\)|\w+\(\w\))\s*=\s*/, "").replace(/\*\*/g, "^"));
     const N = 500, xs = [], ys = [];
     for (let k = 0; k < N; k++) {
       const x = xr[0] + (xr[1] - xr[0]) * k / (N - 1);
-      let y; try { y = f.evaluate({ x }); if (typeof y === "object") y = y.re ?? null; } catch { y = null; }
+      let y; try { y = f.evaluate({ x, t: x, theta: x }); if (typeof y === "object") y = y.re ?? null; } catch { y = null; }
       xs.push(x); ys.push(isFinite(y) && Math.abs(y) < 1e9 ? y : null);
     }
     traces.push({ x: xs, y: ys, mode: "lines", name: (spec.labels || [])[i] || (typeof expr === "object" && expr.label) || e,
@@ -163,10 +171,27 @@ function initMermaid() {
   return (mermaidReady = true);
 }
 
+// A small model often writes labels Mermaid will not parse (unquoted brackets, "Note over" in a flowchart). Try the diagram as written,
+// then with such labels repaired, then with brackets removed from labels, and draw the first version that parses.
+function mermaidVariants(code) {
+  const base = code.replace(/^\s*Note (?:over|left of|right of) .*$/gim, "");
+  const quoted = base.replace(/(\b[A-Za-z_]\w*)\[([^\]"\n]*[()][^\]"\n]*)\]/g, '$1["$2"]');
+  const plain = base.replace(/\[([^\]"\n]*)\]/g, (m, t) => "[" + t.replace(/[()]/g, " ") + "]");
+  return [...new Set([base, quoted, plain])];
+}
+
 async function drawMermaid(el, code) {
   if (!mermaidReady && !initMermaid()) { setTimeout(() => drawMermaid(el, code), 300); return; }
-  const { svg } = await mermaid.render("mm" + (++mermaidN), code);
-  el.innerHTML = svg;
+  const id = "mm" + (++mermaidN), variants = mermaidVariants(code);
+  let use = variants[0];
+  for (const v of variants) { try { if (await mermaid.parse(v, { suppressErrors: true })) { use = v; break; } } catch { } }
+  try {
+    const { svg } = await mermaid.render(id, use);
+    el.innerHTML = svg;
+  } catch (e) {
+    document.getElementById("d" + id)?.remove();   // mermaid leaves a "Syntax error" graphic in the page when it fails
+    throw e;
+  }
 }
 
 function drawCards(el, code) {
@@ -555,8 +580,8 @@ async function ask(text) {
 
   const ctrl = new AbortController(); S.busy = ctrl;
   const sendBtn = $("#send"); sendBtn.textContent = "STOP"; sendBtn.classList.add("busy");
-  let pending = false;
-  const paint = () => { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; fillBot(el, b, false); toBottom(); }); };
+  let pending = false, finished = false;
+  const paint = () => { if (pending || finished) return; pending = true; requestAnimationFrame(() => { pending = false; if (finished) return; fillBot(el, b, false); toBottom(); }); };
   const t0 = performance.now();
   const tick = setInterval(() => {
     if (!b.content && !b.thinking && b.phase && b.phase.startsWith("WARMING")) { b.phase = b.phase.replace(/\(\d+S\)$/, "") + `(${Math.round((performance.now() - t0) / 1000)}S)`; paint(); }
@@ -597,6 +622,7 @@ async function ask(text) {
     else b.notices.push({ text: "BREAK. (stopped)" });
   } finally {
     clearInterval(tick);
+    finished = true;   // a repaint still queued must not overwrite the finished answer (it would bring back "[ drawing plot ... ]")
     S.busy = null; sendBtn.textContent = "RUN"; sendBtn.classList.remove("busy");
     if (b.thinking && b.content) $(".thinking", el).open = false;
     fillBot(el, b, true); toBottom();

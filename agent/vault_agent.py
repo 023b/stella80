@@ -6,7 +6,7 @@ topic notes) are chunked, sent to a local Ollama model, and concepts are accumul
 The _auto/ and _raw/ folders of the vault are rendered deterministically from that state, so they
 can be rebuilt at any time. Notes you wrote yourself are never edited.
 """
-import argparse, fcntl, hashlib, json, os, re, sqlite3, subprocess, sys, time
+import argparse, fcntl, hashlib, json, os, re, sqlite3, subprocess, time
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -166,7 +166,7 @@ def chat(messages, schema, model=None, images=None):
     body = {"model": model or CFG["chat_model"], "messages": messages, "stream": False, "think": False,
             "format": schema, "keep_alive": CFG["keep_alive"],
             "options": {"temperature": 0.1, "num_ctx": 8192, **({"num_thread": RT["num_thread"]} if RT.get("num_thread") else {})}}
-    for attempt in range(3):
+    for _attempt in range(3):
         try:
             r = requests.post(OLL + "/api/chat", json=body, timeout=1800)
             r.raise_for_status()
@@ -414,7 +414,7 @@ def extract(p: Path):
 
 
 def chunk(units):
-    out, label, buf = [], None, ""
+    out, buf = [], ""
     n = CFG["chunk_chars"]
     first = last = None
     for lab, t in units:
@@ -847,7 +847,7 @@ def scan(c):
     if gone and len(gone) > max(3, 0.25 * total):
         log(f"WARNING: {len(gone)} of {total} known files vanished at once; treating as a sync problem, keeping state")
         gone = []
-    for path, did in gone:  # files really removed: forget them (their generated notes disappear on next render)
+    for _path, did in gone:  # files really removed: forget them (their generated notes disappear on next render)
         for t in ("chunks", "mentions"):
             c.execute(f"DELETE FROM {t} WHERE doc_id=?", (did,))
         c.execute("DELETE FROM docs WHERE id=?", (did,))
@@ -879,7 +879,6 @@ def write_managed(path: Path, generated: str, written: set):
 
 
 def render(c):
-    mn = CFG["min_mentions_for_note"]
     docs = {r[0]: r for r in c.execute("SELECT id,path,kind,course,title,doctype,link,sha FROM docs")}
     cons = {r[0]: r for r in c.execute("SELECT id,name,kind,aliases FROM concepts")}
     ment = defaultdict(list)

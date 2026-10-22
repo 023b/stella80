@@ -1,0 +1,940 @@
+{
+ "date": "2026-10-22",
+ "model": "qwen3.5:4b",
+ "embed_model": "nomic-embed-text",
+ "grounding": "blend",
+ "retrieval": [
+  {
+   "id": "lr-too-large",
+   "keyword": [
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md",
+    "02-training-cnns.md"
+   ],
+   "embeddings": [
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md",
+    "02-training-cnns.md"
+   ],
+   "hybrid": [
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md",
+    "02-training-cnns.md"
+   ]
+  },
+  {
+   "id": "momentum-oscillation",
+   "keyword": [
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md",
+    "04-backpropagation.md"
+   ],
+   "embeddings": [
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md"
+   ],
+   "hybrid": [
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md"
+   ]
+  },
+  {
+   "id": "backprop-memory",
+   "keyword": [
+    "04-backpropagation.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "03-gradient-descent.md"
+   ],
+   "embeddings": [
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "04-backpropagation.md",
+    "02-training-cnns.md",
+    "03-gradient-descent.md"
+   ],
+   "hybrid": [
+    "04-backpropagation.md",
+    "02-training-cnns.md",
+    "03-gradient-descent.md",
+    "02-training-cnns.md",
+    "02-training-cnns.md"
+   ]
+  },
+  {
+   "id": "vanishing-sigmoid",
+   "keyword": [
+    "04-backpropagation.md",
+    "04-backpropagation.md",
+    "02-training-cnns.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md"
+   ],
+   "embeddings": [
+    "04-backpropagation.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md"
+   ],
+   "hybrid": [
+    "04-backpropagation.md",
+    "04-backpropagation.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md",
+    "03-gradient-descent.md"
+   ]
+  },
+  {
+   "id": "batchnorm-test-time",
+   "keyword": [
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "03-gradient-descent.md",
+    "03-gradient-descent.md"
+   ],
+   "embeddings": [
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md"
+   ],
+   "hybrid": [
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "03-gradient-descent.md",
+    "03-gradient-descent.md",
+    "04-backpropagation.md"
+   ]
+  },
+  {
+   "id": "weight-sharing",
+   "keyword": [
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "04-backpropagation.md"
+   ],
+   "embeddings": [
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "04-backpropagation.md",
+    "03-gradient-descent.md"
+   ],
+   "hybrid": [
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "04-backpropagation.md",
+    "04-backpropagation.md"
+   ]
+  },
+  {
+   "id": "sgd-settings",
+   "keyword": [
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "03-gradient-descent.md",
+    "02-training-cnns.md",
+    "03-gradient-descent.md"
+   ],
+   "embeddings": [
+    "03-gradient-descent.md",
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "02-training-cnns.md",
+    "03-gradient-descent.md"
+   ],
+   "hybrid": [
+    "02-training-cnns.md",
+    "03-gradient-descent.md",
+    "02-training-cnns.md",
+    "03-gradient-descent.md",
+    "02-training-cnns.md"
+   ]
+  }
+ ],
+ "answers": [
+  {
+   "id": "lr-too-large",
+   "scope": "in",
+   "question": "What happens in gradient descent if the learning rate is too large?",
+   "answer": "### Large Learning Rate Consequences\n\nIf $\\eta$ is too large, each update step overshoots the minimum [1]. The loss function oscillates across the valley or diverges to infinity [1]. This instability occurs because the gradient magnitude multiplied by $\\eta$ exceeds the curvature's stabilizing effect $2/\\lambda_{max}$ [1].\n\n### Practical Implications\n\nIn practice, this manifests as training loss that fails to decrease and eventually explodes [1]. Unlike vanishing gradients (deep sigmoid networks), large $\\eta$ creates instability in all layers [3]. The fix is reducing $\\eta$ or using adaptive methods like Adam which scale steps by gradient noise [4].",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Choosing the learning rate",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "The learning rate is the single most important hyperparameter of gradient descent. If $\\eta$ is too small, training converges but takes a very large number of steps. If $\\eta$ is too large, each step overshoots the minimum; the loss oscillates or diverges to infinity. For a conve",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "- State the update rule and explain the sign: the gradient points uphill.\n- Explain what happens when the learning rate is too large or too small, ideally with a sketch of the loss curve.\n- Compare batch, stochastic and mini-batch gradient descent in terms of cost per step, noise",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Vanishing and exploding gradients",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Each backward step multiplies by a weight matrix and by $\\sigma'$. The sigmoid's derivative is at most 0.25, so in a deep sigmoid network the error signal shrinks layer after layer and the early layers barely learn: the vanishing gradient problem. If the weights are large the pro",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Momentum and adaptive methods",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Momentum keeps a running average of past gradients, $v_{t+1} = \\beta v_t + \\nabla L(\\theta_t)$, and steps along $v$ instead of the raw gradient. With $\\beta \\approx 0.9$ it speeds up progress along consistent directions and damps oscillation across narrow valleys.\n\nAdam combines ",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Training is still gradient descent",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN is trained exactly like any other neural network: a forward pass computes the cross-entropy loss on a mini-batch of images, backpropagation computes the gradient of the loss with respect to every filter weight, and an optimiser updates the weights. For a convolution, the ba",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 139,
+    "tps": 9.5,
+    "prompt_tokens": 1052,
+    "load_s": 0.0,
+    "total_s": 15.1
+   },
+   "error": null,
+   "wall_s": 15.117592811584473,
+   "ttft_s": 0.4138178825378418,
+   "refused": false,
+   "cited": [
+    1,
+    3,
+    4
+   ],
+   "valid": [
+    1,
+    3,
+    4
+   ],
+   "supported": [
+    1
+   ]
+  },
+  {
+   "id": "momentum-oscillation",
+   "scope": "in",
+   "question": "How does momentum reduce oscillation?",
+   "answer": "### Momentum Reduces Oscillation\n\nMomentum maintains a velocity vector $v_t$ that acts like inertia, smoothing updates by averaging past gradients [1]. When $\\eta$ is large, raw gradient descent oscillates across narrow valleys because each step reverses direction sharply [2]. By stepping along the accumulated velocity instead of the raw gradient, momentum dampens these rapid reversals and accelerates progress down consistent slopes.\n\n### Key Exam Points\n- **Sign of Gradient**: The gradient points uphill; descent requires moving opposite to $\\nabla L(\\theta_t)$ [2].\n- **Oscillation Mechanism**: Large $\\eta$ causes overshooting, leading to loss divergence or periodic bouncing around the minimum [4].\n- **Momentum Formula**: $v_{t+1} = \\beta v_t + \\nabla L(\\theta_t)$ accumulates directional history to stabilize updates [1].",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Momentum and adaptive methods",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Momentum keeps a running average of past gradients, $v_{t+1} = \\beta v_t + \\nabla L(\\theta_t)$, and steps along $v$ instead of the raw gradient. With $\\beta \\approx 0.9$ it speeds up progress along consistent directions and damps oscillation across narrow valleys.\n\nAdam combines ",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "- State the update rule and explain the sign: the gradient points uphill.\n- Explain what happens when the learning rate is too large or too small, ideally with a sketch of the loss curve.\n- Compare batch, stochastic and mini-batch gradient descent in terms of cost per step, noise",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "- Derive $\\delta^{(l)}$ for a two-layer network with a sigmoid hidden layer and squared error.\n- Explain why the forward activations must be stored.\n- Explain the vanishing gradient problem and two ways to reduce it.",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Choosing the learning rate",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "The learning rate is the single most important hyperparameter of gradient descent. If $\\eta$ is too small, training converges but takes a very large number of steps. If $\\eta$ is too large, each step overshoots the minimum; the loss oscillates or diverges to infinity. For a conve",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Training loop",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "One step of mini-batch gradient descent on a network:\n\n1. Forward pass on a mini-batch, computing the loss.\n2. Backward pass, computing $\\delta^{(l)}$ and the parameter gradients for every layer.\n3. Update every parameter with the optimiser (SGD with momentum or Adam), using the ",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 187,
+    "tps": 8.8,
+    "prompt_tokens": 877,
+    "load_s": 0.0,
+    "total_s": 55.1
+   },
+   "error": null,
+   "wall_s": 55.12782263755798,
+   "ttft_s": 33.75849485397339,
+   "refused": false,
+   "cited": [
+    1,
+    2,
+    4
+   ],
+   "valid": [
+    1,
+    2,
+    4
+   ],
+   "supported": [
+    1
+   ]
+  },
+  {
+   "id": "backprop-memory",
+   "scope": "in",
+   "question": "Why does training a neural network need more memory than inference?",
+   "answer": "### Memory Usage Comparison\n\n**Training vs Inference**\nTraining requires storing forward activations $a^{(l)}$ to compute gradients via backpropagation [1], whereas inference only needs the final output. This forces us to save intermediate states, multiplying memory usage by roughly 2x for large networks.\n\n**Optimiser State**\nOptimisers like Adam maintain additional memory per parameter for velocity and first/momentum moments $m_t, v_t$ [3]. Inference runs without these buffers, using only the weights $\\theta$.\n\n**Gradient Storage**\nBackpropagation calculates $\\nabla L(\\theta)$ to update parameters [1], requiring temporary storage of gradients during the backward pass. Inference skips this step entirely.",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "From gradient descent to neural networks",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Lecture 3 showed that gradient descent only needs one thing from a model: the gradient of the loss with respect to every parameter. A neural network can have millions of parameters, so computing each partial derivative separately would be far too slow. Backpropagation computes al",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Training is still gradient descent",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN is trained exactly like any other neural network: a forward pass computes the cross-entropy loss on a mini-batch of images, backpropagation computes the gradient of the loss with respect to every filter weight, and an optimiser updates the weights. For a convolution, the ba",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Why we need an optimiser",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Training a model means choosing parameters $\\theta$ that minimise a loss $L(\\theta)$ over the training data. For linear regression with squared error there is a closed-form solution, but for almost every other model, including logistic regression and neural networks, there is not",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Data augmentation and overfitting",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN with millions of parameters overfits a small dataset quickly. Data augmentation creates new training images by random crops, horizontal flips, colour jitter and small rotations, so the network sees a slightly different version of each image every epoch. Weight decay (an L2 ",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Convolutional layers",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A convolutional neural network (CNN) replaces the dense weight matrix of a fully connected layer with small filters, typically $3 \\times 3$, that slide across the image. Each filter is shared across every position, so a layer has few parameters and responds to the same pattern wh",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 153,
+    "tps": 8.7,
+    "prompt_tokens": 1026,
+    "load_s": 0.0,
+    "total_s": 18.1
+   },
+   "error": null,
+   "wall_s": 18.141556978225708,
+   "ttft_s": 0.5078623294830322,
+   "refused": false,
+   "cited": [
+    1,
+    3
+   ],
+   "valid": [
+    1,
+    3
+   ],
+   "supported": []
+  },
+  {
+   "id": "vanishing-sigmoid",
+   "scope": "in",
+   "question": "What is the vanishing gradient problem and why does the sigmoid cause it?",
+   "answer": "# Vanishing Gradient Problem\n\n## Definition\nThe vanishing gradient occurs when backpropagated error signals shrink exponentially as they move backward through deep layers, causing early layers to learn almost nothing.\n\n## Cause: The Sigmoid Derivative\nIn a chain rule calculation, the gradient at layer $l$ involves multiplying by $\\sigma'(z)$. Since the maximum value of the sigmoid derivative is $0.25$, repeated multiplication in a deep network drives the signal toward zero:\n$$ \\delta^{(l)} \\propto (\\sigma')^L $$\n\n## Consequences & Remedies\n- **Symptom**: Weights in early layers update negligibly; training stalls.\n- **Remedy 1 (Activation)**: Use ReLU ($\\sigma' = 1$ for $x>0$) to prevent signal decay.\n- **Remedy 2 (Initialisation)**: Apply Xavier or He initialisation to maintain activation variance across layers [1].",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Vanishing and exploding gradients",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Each backward step multiplies by a weight matrix and by $\\sigma'$. The sigmoid's derivative is at most 0.25, so in a deep sigmoid network the error signal shrinks layer after layer and the early layers barely learn: the vanishing gradient problem. If the weights are large the pro",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "- Derive $\\delta^{(l)}$ for a two-layer network with a sigmoid hidden layer and squared error.\n- Explain why the forward activations must be stored.\n- Explain the vanishing gradient problem and two ways to reduce it.",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "From gradient descent to neural networks",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Lecture 3 showed that gradient descent only needs one thing from a model: the gradient of the loss with respect to every parameter. A neural network can have millions of parameters, so computing each partial derivative separately would be far too slow. Backpropagation computes al",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "- State the update rule and explain the sign: the gradient points uphill.\n- Explain what happens when the learning rate is too large or too small, ideally with a sketch of the loss curve.\n- Compare batch, stochastic and mini-batch gradient descent in terms of cost per step, noise",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Why we need an optimiser",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Training a model means choosing parameters $\\theta$ that minimise a loss $L(\\theta)$ over the training data. For linear regression with squared error there is a closed-form solution, but for almost every other model, including logistic regression and neural networks, there is not",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 202,
+    "tps": 8.7,
+    "prompt_tokens": 963,
+    "load_s": 0.0,
+    "total_s": 23.7
+   },
+   "error": null,
+   "wall_s": 23.706660985946655,
+   "ttft_s": 0.5147011280059814,
+   "refused": false,
+   "cited": [
+    1
+   ],
+   "valid": [
+    1
+   ],
+   "supported": [
+    1
+   ]
+  },
+  {
+   "id": "batchnorm-test-time",
+   "scope": "in",
+   "question": "What does batch normalisation do at test time?",
+   "answer": "# Batch Normalisation at Test Time\n\n## Key Mechanism\nAt test time, BN **does not** use mini-batch statistics (mean and variance). Instead, it uses the **running averages** collected during training.\n\n$$ \\mu_{test} = \\frac{1}{C} \\sum_{i=1}^C w_i^{(train)}, \\quad \\sigma_{test}^2 = \\frac{1}{C} \\sum_{i=1}^C (w_i^{(train)} - \\mu_{test})^2 $$\n\n## Why This Matters\n- **Independence from Batch Size**: Test data batch size is often 1, whereas training batches are large. Running averages provide a stable estimate regardless of input size [1].\n- **Deterministic Output**: Ensures consistent layer output for the same input across different test runs.\n- **Avoids Overfitting to Training Stats**: Prevents the model from relying on specific batch distributions that never exist at inference time.\n\n> (general) This contrasts with training, where statistics are computed per-batch [1].",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Batch normalisation",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "Batch normalisation normalises each channel over the mini-batch to zero mean and unit variance, then applies a learned scale and shift. It lets very deep CNNs train with a much larger learning rate and makes them far less sensitive to weight initialisation, which reduces the vani",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "- Count the parameters of a convolutional layer: $k \\times k \\times C_{in} \\times C_{out}$ plus $C_{out}$ biases.\n- Explain why weight sharing gives translation equivariance.\n- Explain what batch normalisation does at training time and at test time.\n- Describe three data augmenta",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Batch, stochastic and mini-batch gradient descent",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Batch gradient descent computes the gradient over the whole training set before every update. It is exact but expensive, and impossible when the data does not fit in memory.\n\nStochastic gradient descent (SGD) uses the gradient of a single randomly chosen example. Each step is che",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "- State the update rule and explain the sign: the gradient points uphill.\n- Explain what happens when the learning rate is too large or too small, ideally with a sketch of the loss curve.\n- Compare batch, stochastic and mini-batch gradient descent in terms of cost per step, noise",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Training loop",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "One step of mini-batch gradient descent on a network:\n\n1. Forward pass on a mini-batch, computing the loss.\n2. Backward pass, computing $\\delta^{(l)}$ and the parameter gradients for every layer.\n3. Update every parameter with the optimiser (SGD with momentum or Adam), using the ",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 230,
+    "tps": 8.7,
+    "prompt_tokens": 792,
+    "load_s": 0.0,
+    "total_s": 56.6
+   },
+   "error": null,
+   "wall_s": 56.64464807510376,
+   "ttft_s": 30.29969573020935,
+   "refused": false,
+   "cited": [
+    1
+   ],
+   "valid": [
+    1
+   ],
+   "supported": [
+    1
+   ]
+  },
+  {
+   "id": "weight-sharing",
+   "scope": "in",
+   "question": "Why does weight sharing in a CNN give translation equivariance?",
+   "answer": "### Translation Equivariance via Weight Sharing\n\nTranslation equivariance arises because **each filter is shared** across every spatial position [2].  \nIf an image shifts, the same weights compute the feature at the new location, so the output simply moves with the input.  \nMathematically, if $f(x)$ is a feature map and $x$ shifts by $\\delta$, then $f(x+\\delta) = W * (x+\\delta)$.  \nThis contrasts with translation invariance, where the network would need to detect the object regardless of location via max pooling [2].",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "- Count the parameters of a convolutional layer: $k \\times k \\times C_{in} \\times C_{out}$ plus $C_{out}$ biases.\n- Explain why weight sharing gives translation equivariance.\n- Explain what batch normalisation does at training time and at test time.\n- Describe three data augmenta",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Convolutional layers",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A convolutional neural network (CNN) replaces the dense weight matrix of a fully connected layer with small filters, typically $3 \\times 3$, that slide across the image. Each filter is shared across every position, so a layer has few parameters and responds to the same pattern wh",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Data augmentation and overfitting",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN with millions of parameters overfits a small dataset quickly. Data augmentation creates new training images by random crops, horizontal flips, colour jitter and small rotations, so the network sees a slightly different version of each image every epoch. Weight decay (an L2 ",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Vanishing and exploding gradients",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Each backward step multiplies by a weight matrix and by $\\sigma'$. The sigmoid's derivative is at most 0.25, so in a deep sigmoid network the error signal shrinks layer after layer and the early layers barely learn: the vanishing gradient problem. If the weights are large the pro",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "- Derive $\\delta^{(l)}$ for a two-layer network with a sigmoid hidden layer and squared error.\n- Explain why the forward activations must be stored.\n- Explain the vanishing gradient problem and two ways to reduce it.",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 120,
+    "tps": 8.9,
+    "prompt_tokens": 809,
+    "load_s": 0.0,
+    "total_s": 44.4
+   },
+   "error": null,
+   "wall_s": 44.38222527503967,
+   "ttft_s": 30.82547903060913,
+   "refused": false,
+   "cited": [
+    2
+   ],
+   "valid": [
+    2
+   ],
+   "supported": [
+    2
+   ]
+  },
+  {
+   "id": "sgd-settings",
+   "scope": "in",
+   "question": "Which SGD settings are typical for training an image classifier?",
+   "answer": "### Typical SGD Settings for Image Classification\n\nUse **SGD with momentum** ($\\beta \\approx 0.9$) rather than Adam, as it often yields slightly better generalisation on ImageNet-style tasks [1].\n\nStart with a **learning rate of 0.1**, a **batch size of 256**, and apply a **cosine or step decay schedule** after a few epochs of warm-up [1].\n\n*(general)*: This contrasts with Adam ($\\eta \\approx 10^{-3}$), which converges faster initially but may end at lower test accuracy due to over-smoothing [1][4].",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Training is still gradient descent",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN is trained exactly like any other neural network: a forward pass computes the cross-entropy loss on a mini-batch of images, backpropagation computes the gradient of the loss with respect to every filter weight, and an optimiser updates the weights. For a convolution, the ba",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Batch, stochastic and mini-batch gradient descent",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Batch gradient descent computes the gradient over the whole training set before every update. It is exact but expensive, and impossible when the data does not fit in memory.\n\nStochastic gradient descent (SGD) uses the gradient of a single randomly chosen example. Each step is che",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Data augmentation and overfitting",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN with millions of parameters overfits a small dataset quickly. Data augmentation creates new training images by random crops, horizontal flips, colour jitter and small rotations, so the network sees a slightly different version of each image every epoch. Weight decay (an L2 ",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Momentum and adaptive methods",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Momentum keeps a running average of past gradients, $v_{t+1} = \\beta v_t + \\nabla L(\\theta_t)$, and steps along $v$ instead of the raw gradient. With $\\beta \\approx 0.9$ it speeds up progress along consistent directions and damps oscillation across narrow valleys.\n\nAdam combines ",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Convolutional layers",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A convolutional neural network (CNN) replaces the dense weight matrix of a fully connected layer with small filters, typically $3 \\times 3$, that slide across the image. Each filter is shared across every position, so a layer has few parameters and responds to the same pattern wh",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 134,
+    "tps": 8.8,
+    "prompt_tokens": 942,
+    "load_s": 0.0,
+    "total_s": 15.8
+   },
+   "error": null,
+   "wall_s": 15.777234077453613,
+   "ttft_s": 0.5082828998565674,
+   "refused": false,
+   "cited": [
+    1,
+    4
+   ],
+   "valid": [
+    1,
+    4
+   ],
+   "supported": [
+    1
+   ]
+  },
+  {
+   "id": "oos-attention",
+   "scope": "out",
+   "question": "How does self-attention in a transformer compute its attention weights?",
+   "answer": "# Self-Attention Mechanism\n\n## 1. Compute Query, Key, Value Matrices\nFor input sequence $X \\in \\mathbb{R}^{N \\times d}$, project via learned matrices $W^Q, W^K, W^V$ to get $Q, K, V \\in \\mathbb{R}^{N \\times d}$.\n\n## 2. Scale Dot-Product Attention\nCalculate attention scores by taking the dot product of $Q$ and $K$, scaling by $\\frac{1}{\\sqrt{d}}$, and applying softmax:\n$$ \\text{Attention}(Q, K, V) = \\text{softmax}\\left(\\frac{QK^T}{\\sqrt{d}}\\right)V $$\n\n## 3. Weighted Sum of Values\nThe result is a linear combination of the value vectors $V$, where each vector's contribution is determined by its attention weight relative to all other positions in the sequence.",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Common exam points",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "- Count the parameters of a convolutional layer: $k \\times k \\times C_{in} \\times C_{out}$ plus $C_{out}$ biases.\n- Explain why weight sharing gives translation equivariance.\n- Explain what batch normalisation does at training time and at test time.\n- Describe three data augmenta",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Vanishing and exploding gradients",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Each backward step multiplies by a weight matrix and by $\\sigma'$. The sigmoid's derivative is at most 0.25, so in a deep sigmoid network the error signal shrinks layer after layer and the early layers barely learn: the vanishing gradient problem. If the weights are large the pro",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Data augmentation and overfitting",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN with millions of parameters overfits a small dataset quickly. Data augmentation creates new training images by random crops, horizontal flips, colour jitter and small rotations, so the network sees a slightly different version of each image every epoch. Weight decay (an L2 ",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Training is still gradient descent",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN is trained exactly like any other neural network: a forward pass computes the cross-entropy loss on a mini-batch of images, backpropagation computes the gradient of the loss with respect to every filter weight, and an optimiser updates the weights. For a convolution, the ba",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "From gradient descent to neural networks",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Lecture 3 showed that gradient descent only needs one thing from a model: the gradient of the loss with respect to every parameter. A neural network can have millions of parameters, so computing each partial derivative separately would be far too slow. Backpropagation computes al",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 205,
+    "tps": 8.7,
+    "prompt_tokens": 990,
+    "load_s": 0.0,
+    "total_s": 24.0
+   },
+   "error": null,
+   "wall_s": 24.033026933670044,
+   "ttft_s": 0.5035877227783203,
+   "refused": false
+  },
+  {
+   "id": "oos-sourdough",
+   "scope": "out",
+   "question": "How do I make a sourdough starter from scratch?",
+   "answer": "This question does not apply to your CS modules or lecture notes. [1] discusses CNN training, [3] covers gradient descent variants, and [5] mentions overfitting in neural networks. Sourdough baking is unrelated to these topics. Please ask a question about backpropagation, batch sizes, or activation functions instead.",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Batch normalisation",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "Batch normalisation normalises each channel over the mini-batch to zero mean and unit variance, then applies a learned scale and shift. It lets very deep CNNs train with a much larger learning rate and makes them far less sensitive to weight initialisation, which reduces the vani",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Training loop",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "One step of mini-batch gradient descent on a network:\n\n1. Forward pass on a mini-batch, computing the loss.\n2. Backward pass, computing $\\delta^{(l)}$ and the parameter gradients for every layer.\n3. Update every parameter with the optimiser (SGD with momentum or Adam), using the ",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Batch, stochastic and mini-batch gradient descent",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Batch gradient descent computes the gradient over the whole training set before every update. It is exact but expensive, and impossible when the data does not fit in memory.\n\nStochastic gradient descent (SGD) uses the gradient of a single randomly chosen example. Each step is che",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Vanishing and exploding gradients",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Each backward step multiplies by a weight matrix and by $\\sigma'$. The sigmoid's derivative is at most 0.25, so in a deep sigmoid network the error signal shrinks layer after layer and the early layers barely learn: the vanishing gradient problem. If the weights are large the pro",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Data augmentation and overfitting",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN with millions of parameters overfits a small dataset quickly. Data augmentation creates new training images by random crops, horizontal flips, colour jitter and small rotations, so the network sees a slightly different version of each image every epoch. Weight decay (an L2 ",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 68,
+    "tps": 8.9,
+    "prompt_tokens": 920,
+    "load_s": 0.0,
+    "total_s": 43.0
+   },
+   "error": null,
+   "wall_s": 42.97616219520569,
+   "ttft_s": 35.35131216049194,
+   "refused": false
+  },
+  {
+   "id": "oos-worldcup",
+   "scope": "out",
+   "question": "Who won the 2018 FIFA World Cup?",
+   "answer": "This question is unrelated to your CS modules; I cannot answer it from your vault or lecture notes. (general) The 2018 World Cup was won by France, but focus on topics like CNNs or backpropagation instead.",
+   "sources": [
+    {
+     "n": 1,
+     "path": "eval-vault/Machine-Learning/03-gradient-descent.md",
+     "title": "03-gradient-descent",
+     "heading": "Momentum and adaptive methods",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Momentum keeps a running average of past gradients, $v_{t+1} = \\beta v_t + \\nabla L(\\theta_t)$, and steps along $v$ instead of the raw gradient. With $\\beta \\approx 0.9$ it speeds up progress along consistent directions and damps oscillation across narrow valleys.\n\nAdam combines ",
+     "images": []
+    },
+    {
+     "n": 2,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Convolutional layers",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A convolutional neural network (CNN) replaces the dense weight matrix of a fully connected layer with small filters, typically $3 \\times 3$, that slide across the image. Each filter is shared across every position, so a layer has few parameters and responds to the same pattern wh",
+     "images": []
+    },
+    {
+     "n": 3,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Training is still gradient descent",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN is trained exactly like any other neural network: a forward pass computes the cross-entropy loss on a mini-batch of images, backpropagation computes the gradient of the loss with respect to every filter weight, and an optimiser updates the weights. For a convolution, the ba",
+     "images": []
+    },
+    {
+     "n": 4,
+     "path": "eval-vault/Computer-Vision/02-training-cnns.md",
+     "title": "02-training-cnns",
+     "heading": "Data augmentation and overfitting",
+     "kind": "human",
+     "subject": "Computer-Vision",
+     "snippet": "A CNN with millions of parameters overfits a small dataset quickly. Data augmentation creates new training images by random crops, horizontal flips, colour jitter and small rotations, so the network sees a slightly different version of each image every epoch. Weight decay (an L2 ",
+     "images": []
+    },
+    {
+     "n": 5,
+     "path": "eval-vault/Machine-Learning/04-backpropagation.md",
+     "title": "04-backpropagation",
+     "heading": "Vanishing and exploding gradients",
+     "kind": "human",
+     "subject": "Machine-Learning",
+     "snippet": "Each backward step multiplies by a weight matrix and by $\\sigma'$. The sigmoid's derivative is at most 0.25, so in a deep sigmoid network the error signal shrinks layer after layer and the early layers barely learn: the vanishing gradient problem. If the weights are large the pro",
+     "images": []
+    }
+   ],
+   "stats": {
+    "tokens": 50,
+    "tps": 9.0,
+    "prompt_tokens": 981,
+    "load_s": 0.0,
+    "total_s": 43.1
+   },
+   "error": null,
+   "wall_s": 43.087525844573975,
+   "ttft_s": 37.50833439826965,
+   "refused": true
+  }
+ ]
+}

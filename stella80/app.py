@@ -6,7 +6,7 @@ local Ollama model. Read-only on the vault. Chats live in data/stella80.db.
 """
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import asyncio, base64, hashlib, hmac, html, json, os, re, secrets, sqlite3, threading, time, urllib.parse, uuid
+import asyncio, hashlib, hmac, html, json, os, re, secrets, sqlite3, threading, time, urllib.parse, uuid
 from pathlib import Path
 
 import httpx
@@ -105,7 +105,16 @@ VISUAL TOOLS (use when they genuinely help understanding, never as decoration):
   For a 3D surface use {"title": "...", "surface": "expression in x and y", "x": [min,max], "y": [min,max]}.
 - Diagram: a fenced block with language `mermaid` (flowchart TD, sequenceDiagram, stateDiagram-v2). Keep node labels short and quote labels that contain symbols, e.g. A["x_k = F x_k-1"].
 - Tables in markdown when comparing methods.
+- Mermaid flowcharts: only nodes and arrows, edge labels as A -->|label| B (one pair of bars). No "Note over" lines (those are for sequenceDiagram only).
+- A real block is the only way anything gets drawn. Never write a placeholder such as "[drawing mermaid ...]" or "see the diagram below" without the block itself.
+  Time curves can be plotted directly, e.g. a rest-to-rest cubic from 0 to 1 over 0..1 s: {"title": "Cubic trajectory", "x": [0, 1], "fns": ["3*x^2-2*x^3", "6*x-6*x^2", "6-12*x"], "labels": ["position", "velocity", "acceleration"]}
 """
+
+DRAW_RE = re.compile(r"\b(draw|plot|graph|chart|diagram|sketch|visuali[sz]e|illustrate|flowchart|show me (?:a|the) (?:curve|figure|picture))\b", re.I)
+DRAW_NOTE = ("\n\nThe student wants a picture. Draw it yourself now with one fenced `plot` block (a curve or surface from a formula) or one fenced `mermaid` block "
+             "(a flow, structure or sequence). The excerpts do not need to contain a figure, and the vault-only rule covers facts, not drawing: take the formula or the "
+             "steps from the excerpts or from standard theory and draw those. Put the block on its own lines, then two or three sentences on how to read it. "
+             "Do not write a placeholder instead of the block, and do not say that no graph was provided.")
 
 
 # ---------------------------------------------------------------- database
@@ -172,7 +181,7 @@ def vault_resolve(rel):
 def subjects():
     """Module folders are <vault>/<CODE>-<Name> (for example COMP3010-ComputerVision) or <vault>/<Module-Name>."""
     out = []
-    for parent, vault in vault_dirs():
+    for _parent, vault in vault_dirs():
         for d in sorted(vault.iterdir()):
             if not d.is_dir() or d.name.startswith((".", "_")) or d.name.startswith("00-"):
                 continue
@@ -344,19 +353,20 @@ def fts_query(q):
 STOP = set("the a an and or of to in on for is are was be it this that with what how why when which who does do can i me my you your explain about give tell show from as at by into vs".split())
 
 
-def retrieve(query, subject, k, vault):
-    """Reciprocal-rank fusion of BM25 and cosine similarity, weighted toward your own notes."""
+def retrieve(query, subject, k, vault, mode="hybrid"):
+    """Reciprocal-rank fusion of BM25 and cosine similarity, weighted toward your own notes.
+    mode "keyword" or "embeddings" uses one ranker alone (for the evaluation in scripts/eval.py)."""
     scores = {}
     subj_like = f"%,{subject},%" if subject and subject != "ALL" else "%"
     path_like = vault + "/%"
     q = fts_query(query)
     with db() as c:
-        if q:
+        if q and mode != "embeddings":
             rows = c.execute("SELECT chunks.id FROM fts JOIN chunks ON chunks.id=fts.rowid WHERE fts MATCH ? AND chunks.subject LIKE ? AND chunks.path LIKE ? "
                              "ORDER BY bm25(fts, 4.0, 2.0, 1.0) LIMIT 40", (q, subj_like, path_like)).fetchall()
             for rank, r in enumerate(rows):
                 scores[r["id"]] = scores.get(r["id"], 0) + 1 / (60 + rank)
-        if len(VEC["ids"]):
+        if len(VEC["ids"]) and mode != "keyword":
             qv = embed([query], "search_query: ")[0]
             sims = VEC["m"] @ qv
             sims = np.where(np.char.startswith(VEC["path"].astype(str), vault + "/"), sims, -1)
@@ -1465,7 +1475,7 @@ async def admin_add_user(request: Request):
         with db() as c:
             name, pw = add_user(c, body.get("name"), body.get("display"), body.get("vault"), body.get("admin") is True)
     except ValueError as e:
-        raise HTTPException(400, str(e))
+        raise HTTPException(400, str(e)) from None
     return {"name": name, "passphrase": pw}
 
 
@@ -1680,7 +1690,7 @@ async def queue_docs(request: Request, vault: str = "", q: str = "", status: str
 
 @app.post("/api/queue/action")
 async def queue_action(request: Request):
-    u = need_admin(request)
+    need_admin(request)
     body = await request.json()
     v = body.get("vault")
     act = body.get("action")
@@ -1937,6 +1947,17 @@ async def doc_watch_loop():
         await asyncio.sleep(60)
 
 
+FOLLOWUP = re.compile(r"^\s*(and|but|so|then|also|why|how so|how come|what about|how about|can you|could you|explain (that|it|this|more|again)|"
+                      r"again|more|go on|continue|elaborate|give (me )?(an? )?(example|proof)|show (me )?(that|it|this))\b", re.I)
+
+
+def retrieval_query(question, prev_q):
+    """Search text for a question. A follow-up like "and why?" says nothing on its own, so it borrows the previous question.
+    A short question that stands alone (for example an unrelated one) must not: the old notes would be retrieved for it."""
+    short_followup = len(question) <= 25 or (len(question) <= 60 and FOLLOWUP.search(question))
+    return f"{prev_q}\n{question}" if prev_q and short_followup else question
+
+
 @app.post("/api/chat")
 async def chat(req: Request):
     body = await req.json()
@@ -1980,7 +2001,7 @@ async def chat(req: Request):
     subject_name = f"{subject} {subs[subject]['name']}" if subject in subs else ""
     # Follow-ups like "and why?" retrieve poorly alone; lean on the previous question.
     prev_q = next((h["content"] for h in reversed(history) if h["role"] == "user"), "")
-    rq = question if len(question) > 60 or not prev_q else f"{prev_q}\n{question}"
+    rq = retrieval_query(question, prev_q)
 
     async def stream():
         ticket = {"user": user["name"]}
@@ -2046,6 +2067,8 @@ async def chat(req: Request):
             msgs.insert(1, {"role": h["role"], "content": h["content"][:2500]})
         user_msg = ("VAULT EXCERPTS:\n\n" + "\n\n---\n\n".join(ctx) if ctx else "VAULT EXCERPTS: (nothing relevant found)") + \
                f"\n\nQUESTION: {question}"
+        if visuals and DRAW_RE.search(question):
+            user_msg += DRAW_NOTE
         um = {"role": "user", "content": user_msg}
         if images:
             um["images"] = images
@@ -2097,12 +2120,17 @@ async def chat(req: Request):
 
 LOOPBACK = {"127.0.0.1", "localhost", "::1"}
 
+
+def bind_check(host, solo=SOLO):
+    """Solo mode has no login, so it must only ever be reachable from this machine. In Docker the app listens on all
+    interfaces inside the container and the compose file publishes the port; STELLA80_BIND is that published address."""
+    exposed = os.environ.get("STELLA80_BIND", host)
+    if solo and exposed not in LOOPBACK:
+        raise SystemExit(f"Solo mode has no login and would be reachable on {exposed}. Use mode: shared, or bind to 127.0.0.1.")
+
+
 if __name__ == "__main__":
     import uvicorn
     host = os.environ.get("HOST") or CFG.get("host") or ("127.0.0.1" if SOLO else "0.0.0.0")
-    # Solo mode has no login, so it must only ever be reachable from this machine. In Docker the app listens on all
-    # interfaces inside the container and the compose file publishes the port; STELLA80_BIND is that published address.
-    exposed = os.environ.get("STELLA80_BIND", host)
-    if SOLO and exposed not in LOOPBACK:
-        raise SystemExit(f"Solo mode has no login and would be reachable on {exposed}. Use mode: shared, or bind to 127.0.0.1.")
+    bind_check(host)
     uvicorn.run(app, host=host, port=int(os.environ.get("PORT") or CFG.get("port", 8480)))
