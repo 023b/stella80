@@ -11,6 +11,15 @@ It runs on your own machine, with no cloud, no API keys and no telemetry.
 
 Preview above, sped up. The full 75-second video is [docs/media/demo.mp4](docs/media/demo.mp4) (GitHub offers MP4 files as a download rather than a player). It shows a cited answer, the note behind a citation, a VAULT ONLY refusal, and the vault tab, recorded in real time on a CPU-only laptop; the long waits are sped up and captioned as such.
 
+## Why this exists
+
+Studying? Nah. Building a study tool instead? Sure. I'd end up with a few hundred lecture files and no idea where anything was, so
+I built something that reads them for me, answers from them, and tells me which note the answer came from. It was meant to be just for me. Then three
+friends started using it, so it got logins, a leaderboard and an admin page, which was not the plan.
+
+I built it with Claude Code. Claude wrote a lot of the code; I decided what it should do, tried it on my own courses, argued with it
+when it was wrong, and kept what held up. That's why there are tests and an evaluation: so you don't have to take my word for it.
+
 STELLA-80 has two halves:
 
 1. **The vault agent** reads your course files in the background. That means PDFs, slides, Word documents,
