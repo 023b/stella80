@@ -6,7 +6,7 @@ local Ollama model. Read-only on the vault. Chats live in data/stella80.db.
 """
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import asyncio, hashlib, hmac, html, json, os, re, secrets, sqlite3, threading, time, urllib.parse, uuid
+import asyncio, contextlib, hashlib, hmac, html, json, os, re, secrets, sqlite3, threading, time, urllib.parse, uuid
 from pathlib import Path
 
 import httpx
@@ -487,7 +487,13 @@ def system_prompt(subject_name, mode, grounding, visuals, profile, persona=""):
 
 # ---------------------------------------------------------------- app
 
-app = FastAPI(title="STELLA-80")
+@contextlib.asynccontextmanager
+async def lifespan(_app):
+    await startup()   # defined below; FastAPI calls this once the module is fully loaded
+    yield
+
+
+app = FastAPI(title="STELLA-80", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 
 # ---------------------------------------------------------------- accounts and login
@@ -653,7 +659,6 @@ async def login(request: Request):
     return r
 
 
-@app.on_event("startup")
 async def startup():
     secrets_cfg()
     init_db()
